@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4">Your Bookmarked Courses</h2>
+
+  <div class="row">
+    {% for bookmark in bookmarks %}
+    <div class="col-md-4">
+      <div class="card mb-4">
+        {% if bookmark.course.thumbnail %}
+        <img src="{{ bookmark.course.thumbnail.url }}" class="card-img-top" alt="{{ bookmark.course.title }}">
+        {% endif %}
+        <div class="card-body">
+          <h5 class="card-title">{{ bookmark.course.title }}</h5>
+          <p class="card-text">{{ bookmark.course.description|truncatewords:20 }}</p>
+          <a href="{% url 'course_videos' bookmark.course.id %}" class="btn btn-outline-primary btn-sm">View Playlist</a>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <p class="text-muted">You haven't bookmarked any courses yet.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

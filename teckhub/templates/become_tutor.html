@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% block title %}Become a Tutor{% endblock %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow">
+        <div class="card-header bg-purple text-white">
+          <h5 class="mb-0"><i class="bi bi-person-video3 me-2"></i>Become a Tutor</h5>
+        </div>
+        <div class="card-body">
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-success">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+          <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <!-- Personal Information -->
+            <h6 class="mb-3 text-purple"><i class="bi bi-person-fill me-2"></i>Personal Information</h6>
+            <div class="mb-3">
+              <label for="name" class="form-label">Full Name</label>
+              <input type="text" name="name" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email Address</label>
+              <input type="email" name="email" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label for="phone" class="form-label">Phone Number</label>
+              <input type="tel" name="phone" class="form-control" required>
+            </div>
+
+            <!-- Professional Information -->
+            <h6 class="mb-3 text-purple"><i class="bi bi-briefcase-fill me-2"></i>Professional Information</h6>
+            <div class="mb-3">
+              <label for="expertise" class="form-label">Areas of Expertise</label>
+              <input type="text" name="expertise" class="form-control" placeholder="E.g., Python, Data Science, Web Development" required>
+            </div>
+            <div class="mb-3">
+              <label for="experience" class="form-label">Years of Experience</label>
+              <select name="experience" class="form-control" required>
+                <option value="">Select Experience</option>
+                <option value="1-2">1-2 years</option>
+                <option value="3-5">3-5 years</option>
+                <option value="5-10">5-10 years</option>
+                <option value="10+">10+ years</option>
+              </select>
+            </div>
+
+            <!-- Documents -->
+            <h6 class="mb-3 text-purple"><i class="bi bi-file-earmark-text me-2"></i>Documents</h6>
+            <div class="mb-3">
+              <label for="resume" class="form-label">Resume/CV (PDF)</label>
+              <input type="file" name="resume" class="form-control" accept=".pdf" required>
+              <small class="text-muted">Max file size: 5MB</small>
+            </div>
+            <div class="mb-3">
+              <label for="certificates" class="form-label">Certificates (PDF, can select multiple)</label>
+              <input type="file" name="certificates" class="form-control" accept=".pdf" multiple>
+              <small class="text-muted">Max 3 certificates, 5MB each</small>
+            </div>
+
+            <!-- Teaching Profile -->
+            <h6 class="mb-3 text-purple"><i class="bi bi-mortarboard-fill me-2"></i>Teaching Profile</h6>
+            <div class="mb-3">
+              <label for="teaching_style" class="form-label">Teaching Style</label>
+              <select name="teaching_style" class="form-control" required>
+                <option value="">Select Style</option>
+                <option value="practical">Practical & Project-based</option>
+                <option value="theoretical">Theoretical & Concept-focused</option>
+                <option value="mixed">Mixed Approach</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="availability" class="form-label">Weekly Availability (hours)</label>
+              <select name="availability" class="form-control" required>
+                <option value="">Select Availability</option>
+                <option value="0-5">0-5 hours</option>
+                <option value="5-10">5-10 hours</option>
+                <option value="10-20">10-20 hours</option>
+                <option value="20+">20+ hours</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="message" class="form-label">Why do you want to teach? (Teaching Philosophy)</label>
+              <textarea name="message" rows="5" class="form-control" required 
+                placeholder="Tell us about your teaching experience, methodology, and what makes you a great teacher..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-purple">Submit Application</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .bg-purple {
+    background-color: #6f42c1;
+  }
+  .text-purple {
+    color: #6f42c1;
+  }
+  .btn-purple {
+    background-color: #6f42c1;
+    color: white;
+  }
+  .btn-purple:hover {
+    background-color: #5a33a5;
+    color: white;
+  }
+  .card-header {
+    border-bottom: 0;
+  }
+  h6 {
+    font-weight: 600;
+    margin-top: 1.5rem;
+  }
+  .form-label {
+    font-weight: 500;
+  }
+</style>
+{% endblock %}

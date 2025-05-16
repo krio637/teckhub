@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}Update Profile{% endblock %}
+{% block content %}
+<div class="container d-flex justify-content-center mt-5">
+  <form method="POST" enctype="multipart/form-data" class="w-50 bg-white p-4 rounded shadow">
+    {% csrf_token %}
+    <h4 class="text-center mb-4">Update Profile</h4>
+
+    {% if messages %}
+    <div class="messages mb-4">
+      {% for message in messages %}
+      <div class="alert {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'success' %}alert-success{% else %}alert-info{% endif %} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="form-group mb-3">
+      <label>Update Name</label>
+      <input type="text" name="name" class="form-control" value="{{ user.first_name }}" required>
+      <small class="form-text text-muted">Enter your full name</small>
+    </div>
+
+    <div class="form-group mb-3">
+      <label>Update Email</label>
+      <input type="email" name="email" class="form-control" value="{{ user.email }}" required>
+      <small class="form-text text-muted">Enter a valid email address</small>
+    </div>
+
+    <div class="form-group mb-3">
+      <label>Previous Password</label>
+      <input type="password" name="old_password" class="form-control" placeholder="Enter your old password">
+      <small class="form-text text-muted">Required only if you want to change password</small>
+    </div>
+
+    <div class="form-group mb-3">
+      <label>New Password</label>
+      <input type="password" name="new_password" class="form-control" placeholder="Enter new password">
+      <small class="form-text text-muted">Leave blank if you don't want to change password</small>
+    </div>
+ 
+    <div class="form-group mb-3">
+      <label>Confirm Password</label>
+      <input type="password" name="confirm_password" class="form-control" placeholder="Confirm new password">
+      <small class="form-text text-muted">Must match new password</small>
+    </div>
+
+    <div class="form-group mb-4">
+      <label>Update Profile Picture</label>
+      <input type="file" name="profile_pic" class="form-control" accept="image/*">
+      <small class="form-text text-muted">Upload a square image for best results</small>
+    </div>
+
+    <button type="submit" class="btn btn-purple w-100">Update Profile</button>
+  </form>
+</div>
+{% endblock %}

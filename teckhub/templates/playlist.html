@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-5">
+    <!-- Playlist Details -->
+    <div class="card mb-4 p-4">
+        <div class="row align-items-center">
+            <div class="col-md-4">
+                <img src="{{ course.thumbnail.url }}" class="img-fluid rounded" alt="Course Thumbnail">
+                <span class="badge bg-dark mt-2">{{ videos.count }} videos</span>
+            </div>
+            <div class="col-md-8">
+                <div class="d-flex align-items-center mb-3">
+                    <img src="{{ course.teacher.profile.image.url }}" class="rounded-circle me-3" width="50" height="50" alt="Teacher Image">
+                    <div>
+                        <h5 class="mb-0">{{ course.teacher.username }}</h5>
+                        <small class="text-muted">{{ course.created_at|date:"d M Y" }}</small>
+                    </div>
+                </div>
+                <h3>{{ course.title }}</h3>
+                <p>{{ course.description }}</p>
+                <a href="{% url 'teacher_profile' course.teacher.id %}" class="btn btn-purple">View Profile</a>
+                {% if user.is_authenticated and user == course.teacher %}
+                    <a href="{% url 'upload_video' course.id %}" class="btn btn-success ms-2">+ Upload Video</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Playlist Videos -->
+    <h4 class="mb-3">Playlist Videos</h4>
+    <div class="row">
+        {% for video in videos %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="position-relative">
+                    <img src="{{ video.thumbnail.url }}" class="card-img-top" alt="Video Thumbnail">
+                    <span class="position-absolute top-0 end-0 m-2 badge bg-secondary">
+                        #{{ forloop.counter }}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <h6 class="card-title">{{ video.title }}</h6>
+                    <a href="{% url 'video_detail' video.id %}" class="btn btn-outline-primary btn-sm">Watch</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-muted">No videos uploaded yet for this course.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Styling -->
+<style>
+    .btn-purple {
+        background-color: #7b2cbf;
+        color: white;
+    }
+    .btn-purple:hover {
+        background-color: #5a189a;
+        color: white;
+    }
+</style>
+
+{% endblock %}

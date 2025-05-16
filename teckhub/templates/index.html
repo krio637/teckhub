@@ -1,0 +1,853 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home - TeckHub{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section py-5 mb-5">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <h1 class="display-4 fw-bold text-white mb-4 animate-up">Welcome to TeckHub</h1>
+        <p class="lead text-white-50 mb-4 animate-up delay-1">Discover, learn, and grow with our expert-led courses. Join our community of learners and start your journey today.</p>
+        <div class="animate-up delay-2">
+          <a href="{% url 'course_list' %}" class="btn btn-light btn-lg hover-lift me-2">
+            <i class="bi bi-collection-play me-2"></i>Browse Courses
+          </a>
+          <a href="{% url 'teacher_list' %}" class="btn btn-outline-light btn-lg hover-lift">
+            <i class="bi bi-person-video3 me-2"></i>Meet Teachers
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-6 d-none d-lg-block text-center">
+        <div class="hero-illustration-wrapper animate-up delay-3">
+          <img src="{% static 'images/hero-illustration.svg' %}" 
+               alt="Learning Illustration" 
+               class="hero-illustration"
+               onerror="this.onerror=null; this.src='{% static 'images/default-thumbnail.jpg' %}'"
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Stats Cards -->
+  <div class="row g-4 mb-5">
+    <!-- Engagement Stats -->
+    <div class="col-md-4">
+      <div class="card stats-card hover-lift h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <div class="stats-icon-box bg-primary-soft me-3">
+              <i class="bi bi-graph-up-arrow text-primary"></i>
+            </div>
+            <h5 class="card-title mb-0">Community Activity</h5>
+          </div>
+          <div class="activity-list">
+            <div class="activity-item d-flex align-items-center justify-content-between mb-3">
+              <div class="d-flex align-items-center">
+                <div class="activity-icon bg-primary-soft me-3">
+                  <i class="bi bi-hand-thumbs-up"></i>
+                </div>
+                <div>
+                  <h6 class="mb-0">Total Likes</h6>
+                  <small class="text-secondary">Course and content likes</small>
+                </div>
+              </div>
+              <div class="d-flex align-items-center">
+                <h4 class="mb-0 me-3">{{ total_likes }}</h4>
+                <a href="{% url 'course_list' %}?sort=most_liked" class="btn btn-sm btn-light hover-lift">
+                  <i class="bi bi-eye"></i>
+                </a>
+              </div>
+            </div>
+            
+            <div class="activity-item d-flex align-items-center justify-content-between mb-3">
+              <div class="d-flex align-items-center">
+                <div class="activity-icon bg-success-soft me-3">
+                  <i class="bi bi-chat-dots"></i>
+                </div>
+                <div>
+                  <h6 class="mb-0">Comments</h6>
+                  <small class="text-secondary">Discussion contributions</small>
+                </div>
+              </div>
+              <div class="d-flex align-items-center">
+                <h4 class="mb-0 me-3">{{ total_comments }}</h4>
+                <a href="{% url 'course_list' %}?sort=most_discussed" class="btn btn-sm btn-light hover-lift">
+                  <i class="bi bi-eye"></i>
+                </a>
+              </div>
+            </div>
+            
+            <div class="activity-item d-flex align-items-center justify-content-between">
+              <div class="d-flex align-items-center">
+                <div class="activity-icon bg-warning-soft me-3">
+                  <i class="bi bi-bookmark"></i>
+                </div>
+                <div>
+                  <h6 class="mb-0">Bookmarks</h6>
+                  <small class="text-secondary">Saved for later</small>
+                </div>
+              </div>
+              <div class="d-flex align-items-center">
+                <h4 class="mb-0 me-3">{{ total_bookmarks }}</h4>
+                <a href="{% url 'course_list' %}?sort=most_bookmarked" class="btn btn-sm btn-light hover-lift">
+                  <i class="bi bi-eye"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Categories -->
+    <div class="col-md-4">
+      <div class="card h-100 hover-lift">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <div class="stats-icon-box bg-success-soft me-3">
+              <i class="bi bi-grid text-success"></i>
+            </div>
+            <h5 class="card-title mb-0">Top Categories</h5>
+          </div>
+          <div class="category-list">
+            {% if categories %}
+              {% for category in categories %}
+                <a href="{% url 'course_list' %}?category={{ category.name|lower|slugify }}" 
+                   class="category-item d-flex align-items-center justify-content-between">
+                  <span>{{ category.name }}</span>
+                  <span class="badge bg-light text-dark">{{ category.course_count }}</span>
+                </a>
+              {% endfor %}
+            {% else %}
+              <p class="text-muted">No categories found.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Popular Topics -->
+    <div class="col-md-4">
+      <div class="card h-100 hover-lift">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <div class="stats-icon-box bg-warning-soft me-3">
+              <i class="bi bi-stars text-warning"></i>
+            </div>
+            <h5 class="card-title mb-0">Popular Topics</h5>
+          </div>
+          <div class="topic-list">
+            {% if topics %}
+              {% for topic_key, topic in topics.items %}
+                <a href="{% url 'course_list' %}?topic={{ topic_key }}" 
+                   class="topic-item d-flex align-items-center justify-content-between">
+                  <span><i class="bi {{ topic.icon }} me-2"></i>{{ topic.name }}</span>
+                  <span class="badge bg-light text-dark">{{ topic.count }}</span>
+                </a>
+              {% endfor %}
+            {% else %}
+              <p class="text-muted">No topics available.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Featured Courses -->
+  <div class="section-header d-flex align-items-center justify-content-between mb-4">
+    <div>
+      <h3 class="mb-1">Featured Courses</h3>
+      <p class="text-secondary mb-0">Start learning from our popular courses</p>
+    </div>
+    <a href="{% url 'course_list' %}" class="btn btn-primary hover-lift">
+      View All Courses <i class="bi bi-arrow-right ms-2"></i>
+    </a>
+  </div>
+
+  <div class="row g-4">
+    {% if courses %}
+      {% for course in courses %}
+        <div class="col-md-4">
+          <div class="card course-card hover-lift h-100">
+            <div class="course-thumbnail">
+              {% if course.thumbnail %}
+                <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}">
+              {% else %}
+                <img src="{% static 'images/default-thumbnail.jpg' %}" alt="Default thumbnail">
+              {% endif %}
+              <div class="course-overlay">
+                <a href="{% url 'course_videos' course.id %}" class="btn btn-light">
+                  <i class="bi bi-play-circle me-2"></i>View Course
+                </a>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="d-flex align-items-center mb-3">
+                <img src="{% if course.teacher.profile.image %}{{ course.teacher.profile.image.url }}{% else %}{% static 'images/avatar.jpg' %}{% endif %}" 
+                     alt="{{ course.teacher.username }}" 
+                     class="avatar-sm me-2">
+                <div class="instructor-info">
+                  <h6 class="mb-0 instructor-name">{{ course.teacher.get_full_name|default:course.teacher.username }}</h6>
+                  <small class="text-muted">Instructor</small>
+                </div>
+              </div>
+              <div class="course-info">
+                <div class="category-badge mb-2">
+                  <span class="badge bg-primary-soft text-primary">
+                    <i class="bi bi-grid-fill me-1"></i>{{ course.category.name }}
+                  </span>
+                </div>
+                <h5 class="card-title mb-2">{{ course.title }}</h5>
+                <div class="course-meta">
+                  <span class="me-3">
+                    <i class="bi bi-play-circle me-1"></i>
+                    {% with video_count=course.videos.count %}
+                      {{ video_count }} lesson{{ video_count|pluralize }}
+                    {% endwith %}
+                  </span>
+                  <span>
+                    <i class="bi bi-clock me-1"></i>Self-paced
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="col-12">
+        <div class="empty-state text-center py-5">
+          <i class="bi bi-collection-play display-4 text-secondary mb-3"></i>
+          <h4>No Courses Available</h4>
+          <p class="text-secondary">Check back later for new courses</p>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<style>
+  :root[data-theme="light"] {
+    --hero-gradient-start: var(--primary-color);
+    --hero-gradient-end: var(--primary-dark);
+    --hero-text: #ffffff;
+    --hero-text-secondary: rgba(255, 255, 255, 0.7);
+    --card-bg: #ffffff;
+    --card-border: rgba(0, 0, 0, 0.125);
+    --icon-soft-opacity: 0.1;
+    --overlay-bg: rgba(0, 0, 0, 0.5);
+    --hover-transform: scale(1.02);
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --text-primary: #2d3748;
+    --text-secondary: #718096;
+    --text-muted: #6c757d;
+    --badge-bg: #f8f9fa;
+    --badge-text: #2d3748;
+    --card-hover-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    --empty-state-bg: #f8f9fa;
+    --empty-state-icon: #718096;
+    --section-title: #2d3748;
+    --instructor-text: #718096;
+  }
+
+  :root[data-theme="dark"] {
+    --hero-gradient-start: var(--primary-dark);
+    --hero-gradient-end: #1a1a2e;
+    --hero-text: #ffffff;
+    --hero-text-secondary: rgba(255, 255, 255, 0.7);
+    --card-bg: #2a2a3c;
+    --card-border: rgba(255, 255, 255, 0.125);
+    --icon-soft-opacity: 0.2;
+    --overlay-bg: rgba(0, 0, 0, 0.7);
+    --hover-transform: scale(1.02);
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --text-primary: #e2e8f0;
+    --text-secondary: #a0aec0;
+    --text-muted: #a0aec0;
+    --badge-bg: #374151;
+    --badge-text: #e2e8f0;
+    --card-hover-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    --empty-state-bg: #2a2a3c;
+    --empty-state-icon: #a0aec0;
+    --section-title: #e2e8f0;
+    --instructor-text: #a0aec0;
+  }
+
+  /* Global Text Styles */
+  body {
+    color: var(--text-primary);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--text-primary);
+  }
+
+  p, span, div {
+    color: var(--text-primary);
+  }
+
+  .text-secondary {
+    color: var(--text-secondary) !important;
+  }
+
+  .text-muted {
+    color: var(--text-muted) !important;
+  }
+
+  /* Hero Section */
+  .hero-section {
+    background: linear-gradient(135deg, var(--hero-gradient-start), var(--hero-gradient-end));
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-section h1,
+  .hero-section .lead {
+    color: var(--hero-text);
+  }
+
+  .hero-section .lead {
+    color: var(--hero-text-secondary);
+  }
+
+  .hero-image {
+    max-height: 400px;
+    filter: drop-shadow(0 0 20px var(--shadow-color));
+  }
+
+  /* Section Headers */
+  .section-header h3 {
+    color: var(--section-title);
+  }
+
+  .section-header p {
+    color: var(--text-secondary);
+  }
+
+  /* Cards */
+  .card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    transition: all 0.3s ease;
+  }
+
+  .card:hover {
+    transform: var(--hover-transform);
+    box-shadow: var(--card-hover-shadow);
+  }
+
+  .card-title {
+    color: var(--text-primary);
+  }
+
+  .card-body {
+    color: var(--text-primary);
+  }
+
+  /* Activity Items */
+  .activity-item {
+    border: 1px solid var(--card-border);
+    background-color: var(--card-bg);
+  }
+
+  .activity-item:hover {
+    background-color: var(--bg-accent);
+  }
+
+  .activity-item h6 {
+    color: var(--text-primary);
+  }
+
+  .activity-item small {
+    color: var(--text-secondary);
+  }
+
+  /* Category and Topic Items */
+  .category-item, .topic-item {
+    color: var(--text-primary);
+    border: 1px solid var(--card-border);
+    text-decoration: none;
+  }
+
+  .category-item:hover, .topic-item:hover {
+    background-color: var(--bg-accent);
+    color: var(--text-primary);
+  }
+
+  .category-item span, .topic-item span {
+    color: var(--text-primary);
+  }
+
+  .badge {
+    background-color: var(--badge-bg) !important;
+    color: var(--badge-text) !important;
+  }
+
+  /* Course Cards */
+  .course-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+  }
+
+  .course-card h5,
+  .course-card h6 {
+    color: var(--text-primary);
+  }
+
+  .course-card small {
+    color: var(--text-secondary);
+  }
+
+  .course-meta {
+    color: var(--text-secondary);
+  }
+
+  .course-meta span {
+    color: var(--text-secondary);
+  }
+
+  .course-meta i {
+    color: var(--text-secondary);
+  }
+
+  .instructor-info small {
+    color: var(--instructor-text);
+  }
+
+  .course-overlay {
+    background: var(--overlay-bg);
+  }
+
+  /* Empty State */
+  .empty-state {
+    background-color: var(--empty-state-bg);
+  }
+
+  .empty-state i {
+    color: var(--empty-state-icon);
+  }
+
+  .empty-state h4 {
+    color: var(--text-primary);
+  }
+
+  .empty-state p {
+    color: var(--text-secondary);
+  }
+
+  /* Buttons */
+  .btn-light {
+    background-color: var(--badge-bg);
+    color: var(--badge-text);
+    border-color: var(--card-border);
+  }
+
+  .btn-light:hover {
+    background-color: var(--bg-accent);
+    color: var(--text-primary);
+  }
+
+  .btn-outline-light {
+    border-color: rgba(255, 255, 255, 0.5);
+    color: var(--hero-text);
+  }
+
+  .btn-outline-light:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: #ffffff;
+    color: #ffffff;
+  }
+
+  /* Hover Effects */
+  .hover-lift {
+    transition: all 0.3s ease;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--card-hover-shadow);
+  }
+
+  /* Stats Icons */
+  .stats-icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+  }
+
+  .bg-primary-soft { 
+    background-color: rgba(var(--primary-rgb), var(--icon-soft-opacity)); 
+  }
+  
+  .bg-success-soft { 
+    background-color: rgba(25, 135, 84, var(--icon-soft-opacity)); 
+  }
+  
+  .bg-warning-soft { 
+    background-color: rgba(255, 193, 7, var(--icon-soft-opacity)); 
+  }
+
+  /* Activity List */
+  .activity-list {
+    padding: 0.5rem;
+  }
+
+  .activity-item {
+    padding: 1rem;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    margin-bottom: 0.75rem;
+  }
+
+  .activity-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+  }
+
+  /* Category and Topic Lists */
+  .category-list, .topic-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .category-item, .topic-item {
+    padding: 0.75rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+
+  /* Course Cards */
+  .course-thumbnail {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+  }
+
+  .course-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .course-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .course-card:hover .course-thumbnail img {
+    transform: scale(1.1);
+  }
+
+  .course-card:hover .course-overlay {
+    opacity: 1;
+  }
+
+  .avatar-sm {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--card-border);
+  }
+
+  .course-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.875rem;
+    margin-top: 1rem;
+  }
+
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .hero-section {
+      text-align: center;
+      padding: 3rem 0;
+    }
+
+    .hero-section .btn {
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+
+    .course-thumbnail {
+      height: 180px;
+    }
+
+    .activity-item {
+      padding: 0.75rem;
+    }
+
+    .category-item, .topic-item {
+      padding: 0.5rem;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .course-meta {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .section-header {
+      flex-direction: column;
+      gap: 1rem;
+      text-align: center;
+    }
+
+    .section-header .btn {
+      width: 100%;
+    }
+  }
+
+  /* Animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .card {
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  /* Card Shadows */
+  .hover-lift {
+    box-shadow: 0 2px 4px var(--shadow-color);
+  }
+
+  .hover-lift:hover {
+    box-shadow: var(--card-hover-shadow);
+  }
+
+  /* Empty State Refinements */
+  .empty-state {
+    border-radius: 16px;
+    padding: 3rem 1rem;
+  }
+
+  .empty-state i {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Badge Refinements */
+  .badge {
+    padding: 0.5em 0.75em;
+    font-weight: 500;
+    border-radius: 6px;
+  }
+
+  /* Button Refinements */
+  .btn {
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .btn-lg {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.1rem;
+  }
+
+  /* Icon Alignments */
+  .bi {
+    vertical-align: -0.125em;
+  }
+
+  /* Update illustration styles */
+  .hero-illustration-wrapper {
+    position: relative;
+    padding: 2rem;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero-illustration {
+    max-width: 100%;
+    height: auto;
+    width: auto;
+    max-height: 400px;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.15));
+    transition: all 0.3s ease;
+  }
+
+  [data-theme="dark"] .hero-illustration {
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3)) brightness(0.9);
+  }
+
+  .hero-illustration-wrapper:hover .hero-illustration {
+    transform: translateY(-10px);
+    filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.2));
+  }
+
+  [data-theme="dark"] .hero-illustration-wrapper:hover .hero-illustration {
+    filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.4)) brightness(0.9);
+  }
+
+  /* Add loading animation */
+  @keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+  }
+
+  .hero-illustration.loading {
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  /* Animation classes */
+  .animate-up {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: slideUp 0.6s ease forwards;
+  }
+
+  .delay-1 {
+    animation-delay: 0.2s;
+  }
+
+  .delay-2 {
+    animation-delay: 0.4s;
+  }
+
+  .delay-3 {
+    animation-delay: 0.6s;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 991.98px) {
+    .hero-section {
+      text-align: center;
+      padding: 4rem 0;
+    }
+
+    .hero-section .btn {
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  /* Add these new styles */
+  .instructor-info {
+    line-height: 1.2;
+  }
+
+  .instructor-name {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .category-badge .badge {
+    font-weight: 500;
+    padding: 0.5em 0.8em;
+    font-size: 0.85rem;
+  }
+
+  .bg-primary-soft {
+    background-color: rgba(var(--primary-rgb), 0.1);
+  }
+
+  [data-theme="dark"] .bg-primary-soft {
+    background-color: rgba(var(--primary-rgb), 0.2);
+  }
+
+  .course-info {
+    position: relative;
+  }
+
+  .course-meta {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+  }
+
+  .course-meta i {
+    font-size: 1rem;
+    vertical-align: -2px;
+  }
+
+  .avatar-sm {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--card-border);
+  }
+
+  [data-theme="dark"] .avatar-sm {
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  /* Card hover effect refinements */
+  .course-card {
+    transition: all 0.3s ease;
+  }
+
+  .course-card:hover {
+    transform: translateY(-5px);
+  }
+
+  /* Empty state refinements */
+  .empty-state {
+    padding: 3rem 1.5rem;
+    border-radius: 1rem;
+    background-color: var(--card-bg);
+    border: 2px dashed var(--card-border);
+  }
+
+  .empty-state i {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.7;
+  }
+</style>
+{% endblock %}

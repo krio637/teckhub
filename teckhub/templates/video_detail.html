@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ video.title }} - Video{% endblock %}
+
+{% block content %}
+<style>
+    .glass-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 20px;
+        box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="glass-card">
+        <!-- Video Player -->
+        <video class="w-100 rounded mb-3" controls>
+            <source src="{{ video.video_file.url }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+
+        <h3 class="text-white">{{ video.title }}</h3>
+        <p class="text-white"><strong>Course:</strong> {{ video.course.title }}</p>
+        <p class="text-white"><strong>Views:</strong> {{ video.views_count }}</p> <!-- ✅ Views here -->
+
+        <!-- Like Button -->
+        <form method="post" class="mb-3 d-flex align-items-center gap-2">
+            {% csrf_token %}
+            {% if liked %}
+                <button type="submit" name="unlike" class="btn btn-danger">❤️ Unlike</button>
+            {% else %}
+                <button type="submit" name="like" class="btn btn-outline-primary">🤍 Like</button>
+            {% endif %}
+            <span class="text-white">{{ likes_count }} Likes</span>
+        </form>
+
+        <!-- Comment Section -->
+        <hr class="text-white">
+        <h5 class="text-white">Comments</h5>
+
+        {% if user.is_authenticated %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <textarea name="content" class="form-control" rows="3" placeholder="Add a comment..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-success">Post Comment</button>
+        </form>
+        {% else %}
+        <p class="text-light"><a href="{% url 'login' %}" class="text-warning">Login</a> to comment.</p>
+        {% endif %}
+
+        <!-- Comment List -->
+        <div class="mt-4">
+            {% for comment in comments %}
+            <div class="border border-light-subtle rounded p-3 mb-3 bg-white bg-opacity-10 text-white">
+                <strong>{{ comment.user.username }}</strong>
+                <p class="mb-1">{{ comment.content }}</p>
+                <small class="text-muted">{{ comment.created_at|date:"M d, Y H:i" }}</small>
+            </div>
+            {% empty %}
+            <p class="text-light">No comments yet. Be the first to comment!</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

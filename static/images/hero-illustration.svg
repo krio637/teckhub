@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background Elements -->
+    <circle cx="400" cy="300" r="250" fill="#4F46E5" fill-opacity="0.1"/>
+    <circle cx="400" cy="300" r="200" fill="#4F46E5" fill-opacity="0.05"/>
+    
+    <!-- Laptop Base -->
+    <path d="M250 260H550V380H250V260Z" fill="#2A2A3C"/>
+    <path d="M230 380H570V390C570 395 565 400 560 400H240C235 400 230 395 230 390V380Z" fill="#1A1A2E"/>
+    
+    <!-- Screen Content -->
+    <rect x="260" y="270" width="280" height="100" rx="2" fill="#FFFFFF"/>
+    
+    <!-- UI Elements on Screen -->
+    <rect x="270" y="280" width="150" height="10" rx="2" fill="#4F46E5"/>
+    <rect x="270" y="300" width="260" height="5" rx="1" fill="#E2E8F0"/>
+    <rect x="270" y="310" width="240" height="5" rx="1" fill="#E2E8F0"/>
+    <rect x="270" y="330" width="100" height="20" rx="4" fill="#4F46E5"/>
+    
+    <!-- Floating Elements -->
+    <!-- Books -->
+    <rect x="590" y="260" width="60" height="70" rx="4" fill="#4F46E5" fill-opacity="0.8"/>
+    <rect x="600" y="250" width="60" height="70" rx="4" fill="#6366F1"/>
+    <rect x="610" y="240" width="60" height="70" rx="4" fill="#818CF8"/>
+    
+    <!-- Code Brackets -->
+    <path d="M210 300L190 320L210 340" stroke="#4F46E5" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M170 280L150 320L170 360" stroke="#6366F1" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <!-- Graduation Cap -->
+    <path d="M400 200L460 230L400 260L340 230L400 200Z" fill="#4F46E5"/>
+    <path d="M460 230V270" stroke="#4F46E5" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="460" cy="275" r="8" fill="#4F46E5"/>
+    
+    <!-- Decorative Dots -->
+    <circle cx="600" cy="350" r="6" fill="#4F46E5"/>
+    <circle cx="620" cy="350" r="6" fill="#6366F1"/>
+    <circle cx="640" cy="350" r="6" fill="#818CF8"/>
+    
+    <!-- Abstract Shapes -->
+    <circle cx="200" cy="250" r="15" fill="#4F46E5" fill-opacity="0.2"/>
+    <circle cx="600" cy="250" r="20" fill="#6366F1" fill-opacity="0.2"/>
+    <rect x="170" y="380" width="30" height="30" rx="6" transform="rotate(45 170 380)" fill="#818CF8" fill-opacity="0.2"/>
+    <rect x="610" y="280" width="25" height="25" rx="4" transform="rotate(-45 610 280)" fill="#4F46E5" fill-opacity="0.2"/>
+    
+    <!-- Additional Decorative Elements -->
+    <circle cx="400" cy="300" r="5" fill="#4F46E5"/>
+    <circle cx="400" cy="300" r="15" fill="#4F46E5" fill-opacity="0.1"/>
+    <circle cx="400" cy="300" r="25" fill="#4F46E5" fill-opacity="0.05"/>
+</svg> 

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Upload New Video to "{{ course.title }}"</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label">Video Title</label>
+            <input type="text" name="title" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Video File</label>
+            <input type="file" name="video_file" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Thumbnail</label>
+            <input type="file" name="thumbnail" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-success">Upload Video</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,388 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About - TeckHub{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section py-5 mb-5">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <h1 class="display-4 fw-bold text-white mb-4 animate-up">About TeckHub</h1>
+        <p class="lead text-white-50 mb-4 animate-up delay-1">Empowering learners worldwide with cutting-edge tech education and expert-led courses.</p>
+      </div>
+      <div class="col-lg-6 d-none d-lg-block text-center">
+        <div class="hero-illustration-wrapper animate-up delay-2">
+          <img src="{% static 'images/hero-illustration.svg' %}" 
+               alt="About TeckHub" 
+               class="hero-illustration"
+               onerror="this.src='{% static 'images/tutor-hero.png' %}'"
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Mission Section -->
+  <div class="row g-4 mb-5">
+    <div class="col-md-6">
+      <div class="card hover-lift h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-4">
+            <div class="stats-icon-box bg-primary-soft me-3">
+              <i class="bi bi-info-circle text-primary"></i>
+            </div>
+            <h3 class="card-title mb-0">Who We Are</h3>
+          </div>
+          <p class="text-secondary mb-0">TeckHub is a dynamic platform dedicated to providing accessible and valuable tech-related content for students, educators, and tech enthusiasts. We aim to foster a community of learners passionate about technology and continuous learning.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card hover-lift h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-4">
+            <div class="stats-icon-box bg-success-soft me-3">
+              <i class="bi bi-lightbulb text-success"></i>
+            </div>
+            <h3 class="card-title mb-0">Why Choose Us</h3>
+          </div>
+          <p class="text-secondary mb-4">Join a community of passionate learners and access a comprehensive library of tutorials and resources designed to elevate your tech skills.</p>
+          <a href="{% url 'course_list' %}" class="btn btn-primary hover-lift">
+            <i class="bi bi-arrow-right-circle me-2"></i>Explore Courses
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistics Section -->
+  <div class="section-header text-center mb-5">
+    <h2 class="mb-2">Our Impact</h2>
+    <p class="text-secondary">Making a difference in tech education worldwide</p>
+  </div>
+
+  <div class="row g-4 mb-5">
+    <div class="col-md-3">
+      <div class="card stats-card hover-lift h-100">
+        <div class="card-body text-center">
+          <div class="stats-icon-box bg-primary-soft mx-auto mb-3">
+            <i class="bi bi-play-circle text-primary"></i>
+          </div>
+          <h3 class="fw-bold mb-2">10K+</h3>
+          <p class="text-secondary mb-0">Online Courses</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card stats-card hover-lift h-100">
+        <div class="card-body text-center">
+          <div class="stats-icon-box bg-success-soft mx-auto mb-3">
+            <i class="bi bi-people text-success"></i>
+          </div>
+          <h3 class="fw-bold mb-2">40K+</h3>
+          <p class="text-secondary mb-0">Enrolled Students</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card stats-card hover-lift h-100">
+        <div class="card-body text-center">
+          <div class="stats-icon-box bg-warning-soft mx-auto mb-3">
+            <i class="bi bi-person-workspace text-warning"></i>
+          </div>
+          <h3 class="fw-bold mb-2">2K+</h3>
+          <p class="text-secondary mb-0">Expert Tutors</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card stats-card hover-lift h-100">
+        <div class="card-body text-center">
+          <div class="stats-icon-box bg-info-soft mx-auto mb-3">
+            <i class="bi bi-briefcase text-info"></i>
+          </div>
+          <h3 class="fw-bold mb-2">100%</h3>
+          <p class="text-secondary mb-0">Job Placement</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reviews Section -->
+  <div class="section-header text-center mb-5">
+    <h2 class="mb-2">Student Reviews</h2>
+    <p class="text-secondary">Hear what our learners say about their experience</p>
+  </div>
+
+  <!-- Add Review Section -->
+  <div class="card hover-lift mb-5">
+    <div class="card-body">
+      <div class="d-flex align-items-center mb-4">
+        <div class="stats-icon-box bg-primary-soft me-3">
+          <i class="bi bi-chat-square-text text-primary"></i>
+        </div>
+        <h3 class="card-title mb-0">Share Your Experience</h3>
+      </div>
+      <form method="POST" action="{% url 'add_review' %}">
+        {% csrf_token %}
+        <div class="mb-3">
+          <textarea class="form-control" name="review" rows="3" placeholder="Write your review here..." required></textarea>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Rating</label>
+          <div class="rating-select">
+            <select name="rating" class="form-select" required>
+              <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+              <option value="4">⭐⭐⭐⭐ Very Good</option>
+              <option value="3">⭐⭐⭐ Good</option>
+              <option value="2">⭐⭐ Fair</option>
+              <option value="1">⭐ Poor</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary hover-lift">
+          <i class="bi bi-send me-2"></i>Submit Review
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Reviews Grid -->
+  <div class="row g-4">
+    {% for review in reviews %}
+    <div class="col-md-6 col-lg-4">
+      <div class="card review-card hover-lift h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <img src="{{ review.user.profile.image.url|default:'/static/images/avatar.jpg' }}" 
+                 alt="{{ review.user.username }}" 
+                 class="avatar-sm me-3">
+            <div>
+              <h6 class="mb-0">{{ review.user.username }}</h6>
+              <small class="text-secondary">Student</small>
+            </div>
+          </div>
+          <p class="text-secondary mb-3">{{ review.text }}</p>
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="rating text-warning">
+              {% for star in stars %}
+                <i class="bi bi-star{% if star <= review.rating %}-fill{% endif %}"></i>
+              {% endfor %}
+            </div>
+            {% if review.created_at %}
+            <small class="text-secondary">{{ review.created_at|date:"F j, Y" }}</small>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+      <div class="empty-state text-center py-5">
+        <i class="bi bi-chat-square-text display-4 text-secondary mb-3"></i>
+        <h4>No Reviews Yet</h4>
+        <p class="text-secondary">Be the first to share your experience!</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<style>
+    :root[data-theme="light"] {    --hero-gradient-start: var(--primary-color);    --hero-gradient-end: var(--primary-dark);    --hero-text: #ffffff;    --hero-text-secondary: rgba(255, 255, 255, 0.7);    --card-bg: #ffffff;    --card-border: rgba(0, 0, 0, 0.125);    --icon-soft-opacity: 0.1;    --overlay-bg: rgba(0, 0, 0, 0.5);    --hover-transform: scale(1.02);    --shadow-color: rgba(0, 0, 0, 0.1);    --text-primary: #2d3748;    --text-secondary: #718096;    --text-muted: #6c757d;  }  :root[data-theme="dark"] {    --hero-gradient-start: var(--primary-dark);    --hero-gradient-end: #1a1a2e;    --hero-text: #ffffff;    --hero-text-secondary: rgba(255, 255, 255, 0.7);    --card-bg: #2a2a3c;    --card-border: rgba(255, 255, 255, 0.125);    --icon-soft-opacity: 0.2;    --overlay-bg: rgba(0, 0, 0, 0.7);    --hover-transform: scale(1.02);    --shadow-color: rgba(255, 255, 255, 0.05);    --text-primary: #e2e8f0;    --text-secondary: #a0aec0;    --text-muted: #718096;  }
+
+  /* Hero Section */
+  .hero-section {
+    background: linear-gradient(135deg, var(--hero-gradient-start), var(--hero-gradient-end));
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-section h1,
+  .hero-section .lead {
+    color: var(--hero-text);
+  }
+
+  .hero-section .lead {
+    color: var(--hero-text-secondary);
+  }
+
+  /* Stats Icons */
+  .stats-icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+  }
+
+  .bg-primary-soft { background-color: rgba(var(--primary-rgb), var(--icon-soft-opacity)); }
+  .bg-success-soft { background-color: rgba(25, 135, 84, var(--icon-soft-opacity)); }
+  .bg-warning-soft { background-color: rgba(255, 193, 7, var(--icon-soft-opacity)); }
+  .bg-info-soft { background-color: rgba(13, 202, 240, var(--icon-soft-opacity)); }
+
+  /* Cards */
+  .card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  }
+
+  .hover-lift:hover {
+    transform: var(--hover-transform);
+    box-shadow: 0 10px 20px var(--shadow-color);
+  }
+
+  /* Text Colors */
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--text-primary);
+  }
+
+  .text-secondary {
+    color: var(--text-secondary) !important;
+  }
+
+  /* Form Elements */
+  .form-control {
+    background-color: var(--card-bg);
+    border-color: var(--card-border);
+    color: var(--text-primary);
+  }
+
+  .form-control:focus {
+    background-color: var(--card-bg);
+    border-color: var(--primary-color);
+    color: var(--text-primary);
+    box-shadow: 0 0 0 0.2rem rgba(var(--primary-rgb), 0.25);
+  }
+
+  .form-select {
+    background-color: var(--card-bg);
+    border-color: var(--card-border);
+    color: var(--text-primary);
+  }
+
+  /* Avatar */
+  .avatar-sm {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  /* Animations */
+  .animate-up {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s ease forwards;
+  }
+
+  .delay-1 { animation-delay: 0.2s; }
+  .delay-2 { animation-delay: 0.4s; }
+  .delay-3 { animation-delay: 0.6s; }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Hero Illustration */
+  .hero-illustration-wrapper {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-illustration {
+    max-width: 100%;
+    height: auto;
+    filter: drop-shadow(0 10px 20px var(--shadow-color));
+    transition: transform 0.3s ease;
+  }
+
+  .hero-illustration-wrapper:hover .hero-illustration {
+    transform: translateY(-5px);
+  }
+
+  /* Stats Cards */
+  .stats-card {
+    overflow: hidden;
+  }
+
+  .stats-icon-box {
+    transition: transform 0.2s ease;
+  }
+
+  .stats-card:hover .stats-icon-box {
+    transform: scale(1.1);
+  }
+
+  /* Reviews */
+  .review-card {
+    position: relative;
+  }
+
+  .avatar-sm {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .rating {
+    font-size: 0.9rem;
+  }
+
+  /* Empty State */
+  .empty-state {
+    color: var(--text-secondary);
+  }
+
+  .empty-state i {
+    opacity: 0.5;
+  }
+
+  /* Buttons */
+  .btn {
+    transition: all 0.2s ease-in-out;
+  }
+
+  .btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+  }
+
+  .btn-primary:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    transform: translateY(-1px);
+  }
+
+  .btn-outline-light:hover {
+    transform: translateY(-1px);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .hero-section {
+      text-align: center;
+      padding: 3rem 0;
+    }
+
+    .stats-icon-box {
+      margin-bottom: 1rem;
+    }
+  }
+</style>
+{% endblock %}

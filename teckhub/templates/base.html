@@ -1,0 +1,192 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}TeckHub - Home{% endblock %}</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{% static 'css/theme.css' %}">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
+  <style>
+    /* Existing styles */
+    
+    /* Search Input Styles */
+    .search-input {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      border-right: none;
+      padding-right: 0.5rem;
+      background-color: var(--bg-light);
+      transition: all 0.3s ease;
+    }
+
+    .search-input:focus {
+      box-shadow: none;
+      border-color: var(--primary-color);
+      background-color: var(--bg-white);
+    }
+
+    .input-group .btn {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      padding: 0.25rem 0.5rem;
+    }
+
+    .input-group .btn i {
+      font-size: 0.875rem;
+    }
+
+    /* Dark mode adjustments */
+    [data-theme="dark"] .search-input {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.1);
+      color: var(--text-light);
+    }
+
+    [data-theme="dark"] .search-input::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    [data-theme="dark"] .search-input:focus {
+      background-color: rgba(255, 255, 255, 0.15);
+      border-color: var(--primary-color);
+    }
+  </style>
+</head>
+<body>
+  {% if user.is_authenticated %}
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="profile text-center mb-4">
+      <img src="{% if user.profile.image %}{{ user.profile.image.url }}{% else %}{% static 'images/avatar.jpg' %}{% endif %}" alt="Profile" class="profile-image">
+      <h5 class="mt-3">{{ user.username }}</h5>
+      <p class="text-light">{{ user.profile.role }}</p>
+    </div>
+    <ul class="nav flex-column mt-4">
+      <li class="nav-item mb-2"><a href="{% url 'home' %}" class="nav-link hover-lift"><i class="bi bi-house-door me-2"></i>Home</a></li>
+      <li class="nav-item mb-2"><a href="{% url 'about' %}" class="nav-link hover-lift"><i class="bi bi-question-circle me-2"></i>About</a></li>
+      <li class="nav-item mb-2"><a href="{% url 'course_list' %}" class="nav-link hover-lift"><i class="bi bi-mortarboard me-2"></i>Courses</a></li>
+      <li class="nav-item mb-2"><a href="{% url 'teacher_list' %}" class="nav-link hover-lift"><i class="bi bi-person-video3 me-2"></i>Teachers</a></li>
+      <li class="nav-item mb-2"><a href="{% url 'contact' %}" class="nav-link hover-lift"><i class="bi bi-envelope me-2"></i>Contact Us</a></li>
+    </ul>
+  </div>
+
+  <!-- Top Navbar -->
+  <div class="topbar" id="topbar">
+    <div class="fw-bold fs-4">TeckHub</div>
+    <div class="d-flex align-items-center gap-3">
+      <form action="{% url 'search' %}" method="GET" class="search-form d-flex mb-0">
+        <div class="input-group">
+          <input type="text" 
+                 name="q" 
+                 class="form-control form-control-sm search-input" 
+                 placeholder="Search courses, teachers..." 
+                 value="{{ request.GET.q|default:'' }}"
+                 aria-label="Search"
+                 autocomplete="off"
+                 style="width: 250px;">
+          <button type="submit" class="btn btn-sm btn-primary d-flex align-items-center justify-content-center" style="width: 40px;">
+            <i class="bi bi-search"></i>
+          </button>
+        </div>
+      </form>
+      <i class="bi bi-list fs-5 hover-lift" style="cursor: pointer;" onclick="toggleSidebar()"></i>
+      <div class="dropdown">
+        <button class="btn btn-light dropdown-toggle border-0 hover-lift" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-person fs-5"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end p-3" aria-labelledby="profileDropdown">
+          <div class="text-center">
+            <img src="{% if user.profile.image %}{{ user.profile.image.url }}{% else %}{% static 'images/avatar.png' %}{% endif %}" class="rounded-circle mb-2" width="60" height="60" alt="Profile">
+            <h6 class="mb-0">{{ user.username }}</h6>
+            <small class="text-secondary">{{ user.profile.role }}</small>
+          </div>
+          <hr>
+          <li><a class="btn btn-primary w-100 hover-lift" href="{% url 'profile' %}">View Profile</a></li>
+        </ul>
+      </div>
+      <i class="bi bi-moon fs-5 theme-toggle" id="themeToggle" title="Toggle Night Mode"></i>
+      <form method="post" action="{% url 'logout' %}" class="mb-0">
+        {% csrf_token %}
+        <button class="btn btn-outline-primary hover-lift">
+          <i class="bi bi-box-arrow-right me-1"></i> Sign Out
+        </button>
+      </form>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Main Content -->
+  <div class="main-content" id="main">
+    {% block content %}{% endblock %}
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Theme Toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const html = document.documentElement;
+    
+    themeToggle.addEventListener('click', () => {
+      if (html.getAttribute('data-theme') === 'light') {
+        html.setAttribute('data-theme', 'dark');
+        themeToggle.classList.replace('bi-moon', 'bi-sun');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        html.setAttribute('data-theme', 'light');
+        themeToggle.classList.replace('bi-sun', 'bi-moon');
+        localStorage.setItem('theme', 'light');
+      }
+    });
+
+    // Load saved theme
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    html.setAttribute('data-theme', savedTheme);
+    themeToggle.classList.replace('bi-moon', savedTheme === 'dark' ? 'bi-sun' : 'bi-moon');
+
+    // Sidebar Toggle
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('hidden');
+      document.getElementById('topbar').classList.toggle('full');
+      document.getElementById('main').classList.toggle('full');
+    }
+
+    // Initialize search input
+    document.addEventListener('DOMContentLoaded', function() {
+      const searchForm = document.querySelector('.search-form');
+      const searchInput = searchForm.querySelector('.search-input');
+      
+      // Clear search on focus
+      searchInput.addEventListener('focus', function() {
+        if (this.value === '') {
+          this.setAttribute('placeholder', '');
+        }
+      });
+
+      // Restore placeholder on blur
+      searchInput.addEventListener('blur', function() {
+        if (this.value === '') {
+          this.setAttribute('placeholder', 'Search courses, teachers...');
+        }
+      });
+
+      // Prevent empty searches
+      searchForm.addEventListener('submit', function(e) {
+        if (searchInput.value.trim() === '') {
+          e.preventDefault();
+          searchInput.focus();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

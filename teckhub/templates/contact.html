@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contact Us - TeckHub{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section py-5 mb-5">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <h1 class="display-4 fw-bold text-white mb-4 animate-up">Get In Touch</h1>
+        <p class="lead text-white-50 mb-4 animate-up delay-1">Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+      </div>
+      <div class="col-lg-6 d-none d-lg-block text-center">
+        <div class="hero-illustration-wrapper animate-up delay-2">
+          <img src="{% static 'images/contact-illustration.svg' %}" alt="Contact Us" class="hero-illustration">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row g-4">
+    <!-- Contact Form -->
+    <div class="col-lg-7">
+      <div class="card hover-lift h-100 animate-up delay-1">
+        <div class="card-body p-4">
+          <h3 class="card-title mb-4">Send us a Message</h3>
+          <form method="post" class="needs-validation" novalidate>
+            {% csrf_token %}
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="form-floating">
+                  <input type="text" class="form-control" id="name" name="name" placeholder="Your Name" required>
+                  <label for="name">Your Name</label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-floating">
+                  <input type="email" class="form-control" id="email" name="email" placeholder="Your Email" required>
+                  <label for="email">Your Email</label>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="form-floating">
+                  <input type="tel" class="form-control" id="number" name="number" placeholder="Phone Number" required>
+                  <label for="number">Phone Number</label>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="form-floating">
+                  <textarea class="form-control" id="message" name="message" placeholder="Your Message" style="height: 150px" required></textarea>
+                  <label for="message">Your Message</label>
+                </div>
+              </div>
+              <div class="col-12">
+                <button type="submit" class="btn btn-primary w-100 hover-lift">
+                  <i class="bi bi-send me-2"></i>Send Message
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Info -->
+    <div class="col-lg-5">
+      <div class="card hover-lift h-100 animate-up delay-2">
+        <div class="card-body p-4">
+          <h3 class="card-title mb-4">Contact Information</h3>
+          
+          <div class="contact-info-item d-flex align-items-center mb-4">
+            <div class="stats-icon-box bg-primary-soft me-3">
+              <i class="bi bi-telephone text-primary"></i>
+            </div>
+            <div>
+              <h5 class="mb-1">Phone Numbers</h5>
+              <p class="mb-0 text-secondary">123-456-7890<br>111-222-3333</p>
+            </div>
+          </div>
+
+          <div class="contact-info-item d-flex align-items-center mb-4">
+            <div class="stats-icon-box bg-success-soft me-3">
+              <i class="bi bi-envelope text-success"></i>
+            </div>
+            <div>
+              <h5 class="mb-1">Email Addresses</h5>
+              <p class="mb-0 text-secondary">TeckHub@gmail.com<br>TeckHub03@gmail.com</p>
+            </div>
+          </div>
+
+          <div class="contact-info-item d-flex align-items-center">
+            <div class="stats-icon-box bg-warning-soft me-3">
+              <i class="bi bi-geo-alt text-warning"></i>
+            </div>
+            <div>
+              <h5 class="mb-1">Office Address</h5>
+              <p class="mb-0 text-secondary">Flat No. 1, J-1 Building,<br>Jogeshwari, Mumbai,<br>India - 400104</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .form-floating > .form-control,
+  .form-floating > .form-control-plaintext {
+    height: calc(3.5rem + 2px);
+    line-height: 1.25;
+  }
+
+  .form-floating > label {
+    padding: 1rem 0.75rem;
+  }
+
+  .form-floating > .form-control:focus ~ label,
+  .form-floating > .form-control:not(:placeholder-shown) ~ label {
+    transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+  }
+
+  .contact-info-item .stats-icon-box {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+  }
+
+  .contact-info-item .stats-icon-box i {
+    font-size: 1.5rem;
+  }
+</style>
+{% endblock %}

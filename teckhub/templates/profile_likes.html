@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Liked Videos</h2>
+
+    {% if liked_videos %}
+        <div class="row">
+            {% for like in liked_videos %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        {% if like.video.thumbnail %}
+                            <img src="{{ like.video.thumbnail.url }}" class="card-img-top" alt="{{ like.video.title }}">
+                        {% else %}
+                            <img src="{% static 'default_video_thumbnail.jpg' %}" class="card-img-top" alt="No thumbnail">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ like.video.title }}</h5>
+                            <a href="{% url 'video_detail' like.video.id %}" class="btn btn-primary btn-sm">View Video</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>You haven't liked any videos yet.</p>
+    {% endif %}
+</div>
+{% endblock %}
