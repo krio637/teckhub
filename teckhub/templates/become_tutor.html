@@ -3,95 +3,245 @@
 {% load static %}
 
 {% block content %}
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-8">
-      <div class="card shadow">
-        <div class="card-header bg-purple text-white">
-          <h5 class="mb-0"><i class="bi bi-person-video3 me-2"></i>Become a Tutor</h5>
+<!-- Hero Section -->
+<div class="hero-section py-5 mb-5">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <h1 class="display-4 fw-bold text-white mb-4 animate-up">Join Our Teaching Community</h1>
+        <p class="lead text-white-50 mb-4 animate-up delay-1">Share your expertise, inspire learners, and build your teaching career with TeckHub.</p>
+        
+        <div class="benefits-grid animate-up delay-2">
+          <div class="benefit-item">
+            <div class="benefit-icon">
+              <i class="bi bi-cash-stack"></i>
+            </div>
+            <h5>Earn Money</h5>
+            <p>Set your rates and earn teaching online</p>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon">
+              <i class="bi bi-clock"></i>
+            </div>
+            <h5>Flexible Hours</h5>
+            <p>Teach on your own schedule</p>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon">
+              <i class="bi bi-globe"></i>
+            </div>
+            <h5>Global Reach</h5>
+            <p>Connect with students worldwide</p>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon">
+              <i class="bi bi-graph-up"></i>
+            </div>
+            <h5>Grow Skills</h5>
+            <p>Develop your teaching expertise</p>
+          </div>
         </div>
-        <div class="card-body">
+      </div>
+      <div class="col-lg-6 d-none d-lg-block">
+        <div class="hero-illustration-wrapper animate-up delay-3">
+          <img src="{% static 'images/teaching-illustration.svg' %}" 
+               alt="Teaching Illustration" 
+               class="hero-illustration"
+               onerror="this.onerror=null; this.src='{% static 'images/default-thumbnail.jpg' %}'"
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Application Form Section -->
+<div class="container pb-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card application-card">
+        <div class="card-body p-4">
+          <!-- Progress Bar -->
+          <div class="progress-wrapper mb-4">
+            <div class="progress-steps">
+              <div class="progress-step active" data-step="1">
+                <div class="step-icon"><i class="bi bi-person-fill"></i></div>
+                <span class="step-label">Personal</span>
+              </div>
+              <div class="progress-step" data-step="2">
+                <div class="step-icon"><i class="bi bi-briefcase-fill"></i></div>
+                <span class="step-label">Professional</span>
+              </div>
+              <div class="progress-step" data-step="3">
+                <div class="step-icon"><i class="bi bi-file-earmark-text"></i></div>
+                <span class="step-label">Documents</span>
+              </div>
+              <div class="progress-step" data-step="4">
+                <div class="step-icon"><i class="bi bi-mortarboard-fill"></i></div>
+                <span class="step-label">Teaching</span>
+              </div>
+            </div>
+            <div class="progress">
+              <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+          </div>
+
           {% if messages %}
             {% for message in messages %}
-              <div class="alert alert-success">{{ message }}</div>
+              <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
             {% endfor %}
           {% endif %}
-          <form method="POST" enctype="multipart/form-data">
+
+          <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate id="tutorForm">
             {% csrf_token %}
             
-            <!-- Personal Information -->
-            <h6 class="mb-3 text-purple"><i class="bi bi-person-fill me-2"></i>Personal Information</h6>
-            <div class="mb-3">
-              <label for="name" class="form-label">Full Name</label>
-              <input type="text" name="name" class="form-control" required>
-            </div>
-            <div class="mb-3">
-              <label for="email" class="form-label">Email Address</label>
-              <input type="email" name="email" class="form-control" required>
-            </div>
-            <div class="mb-3">
-              <label for="phone" class="form-label">Phone Number</label>
-              <input type="tel" name="phone" class="form-control" required>
+            <!-- Form sections -->
+            <div class="form-sections">
+              <!-- Personal Information -->
+              <div class="form-section mb-4 active" data-section="1">
+                <div class="section-header d-flex align-items-center mb-3">
+                  <div class="section-icon">
+                    <i class="bi bi-person-fill"></i>
+                  </div>
+                  <h4 class="mb-0">Personal Information</h4>
+                </div>
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label for="name" class="form-label">Full Name</label>
+                    <input type="text" name="name" class="form-control" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" name="email" class="form-control" required>
+                  </div>
+                  <div class="col-12">
+                    <label for="phone" class="form-label">Phone Number</label>
+                    <input type="tel" name="phone" class="form-control" required>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Professional Information -->
+              <div class="form-section mb-4" data-section="2" style="display: none;">
+                <div class="section-header d-flex align-items-center mb-3">
+                  <div class="section-icon">
+                    <i class="bi bi-briefcase-fill"></i>
+                  </div>
+                  <h4 class="mb-0">Professional Information</h4>
+                </div>
+                <div class="row g-3">
+                  <div class="col-md-8">
+                    <label for="expertise" class="form-label">Areas of Expertise</label>
+                    <input type="text" name="expertise" class="form-control" placeholder="E.g., Python, Data Science, Web Development" required>
+                  </div>
+                  <div class="col-md-4">
+                    <label for="experience" class="form-label">Years of Experience</label>
+                    <select name="experience" class="form-select" required>
+                      <option value="">Select Experience</option>
+                      <option value="1-2">1-2 years</option>
+                      <option value="3-5">3-5 years</option>
+                      <option value="5-10">5-10 years</option>
+                      <option value="10+">10+ years</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Documents -->
+              <div class="form-section mb-4" data-section="3" style="display: none;">
+                <div class="section-header d-flex align-items-center mb-3">
+                  <div class="section-icon">
+                    <i class="bi bi-file-earmark-text"></i>
+                  </div>
+                  <h4 class="mb-0">Documents</h4>
+                </div>
+                <div class="row g-3">
+                  <div class="col-12">
+                    <div class="upload-box" id="resumeUpload">
+                      <div class="upload-placeholder">
+                        <i class="bi bi-cloud-arrow-up display-4 mb-2"></i>
+                        <h5>Upload Resume/CV</h5>
+                        <p class="text-muted">Drag & drop your PDF file here or click to browse</p>
+                        <small class="text-muted d-block">Max file size: 5MB</small>
+                      </div>
+                      <div class="upload-preview" style="display: none;">
+                        <i class="bi bi-file-pdf text-danger"></i>
+                        <span class="filename">document.pdf</span>
+                        <button type="button" class="btn btn-link text-danger remove-file">
+                          <i class="bi bi-x-circle"></i>
+                        </button>
+                      </div>
+                      <input type="file" name="resume" class="form-control visually-hidden" accept=".pdf" required>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <div class="upload-box" id="certificatesUpload">
+                      <div class="upload-placeholder">
+                        <i class="bi bi-cloud-arrow-up display-4 mb-2"></i>
+                        <h5>Upload Certificates</h5>
+                        <p class="text-muted">Drag & drop up to 3 PDF files here or click to browse</p>
+                        <small class="text-muted d-block">Max 3 certificates, 5MB each</small>
+                      </div>
+                      <div class="upload-preview" style="display: none;">
+                        <div class="certificate-list"></div>
+                      </div>
+                      <input type="file" name="certificates" class="form-control visually-hidden" accept=".pdf" multiple>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Teaching Profile -->
+              <div class="form-section mb-4" data-section="4" style="display: none;">
+                <div class="section-header d-flex align-items-center mb-3">
+                  <div class="section-icon">
+                    <i class="bi bi-mortarboard-fill"></i>
+                  </div>
+                  <h4 class="mb-0">Teaching Profile</h4>
+                </div>
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label for="teaching_style" class="form-label">Teaching Style</label>
+                    <select name="teaching_style" class="form-select" required>
+                      <option value="">Select Style</option>
+                      <option value="practical">Practical & Project-based</option>
+                      <option value="theoretical">Theoretical & Concept-focused</option>
+                      <option value="mixed">Mixed Approach</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="availability" class="form-label">Weekly Availability</label>
+                    <select name="availability" class="form-select" required>
+                      <option value="">Select Availability</option>
+                      <option value="0-5">0-5 hours</option>
+                      <option value="5-10">5-10 hours</option>
+                      <option value="10-20">10-20 hours</option>
+                      <option value="20+">20+ hours</option>
+                    </select>
+                  </div>
+                  <div class="col-12">
+                    <label for="message" class="form-label">Teaching Philosophy</label>
+                    <textarea name="message" rows="5" class="form-control" required 
+                      placeholder="Tell us about your teaching experience, methodology, and what makes you a great teacher..."></textarea>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <!-- Professional Information -->
-            <h6 class="mb-3 text-purple"><i class="bi bi-briefcase-fill me-2"></i>Professional Information</h6>
-            <div class="mb-3">
-              <label for="expertise" class="form-label">Areas of Expertise</label>
-              <input type="text" name="expertise" class="form-control" placeholder="E.g., Python, Data Science, Web Development" required>
+            <div class="form-navigation d-flex justify-content-between mt-4">
+              <button type="button" class="btn btn-outline-primary prev-step" style="display: none;">
+                <i class="bi bi-arrow-left me-2"></i>Previous
+              </button>
+              <button type="button" class="btn btn-primary next-step">
+                Next<i class="bi bi-arrow-right ms-2"></i>
+              </button>
+              <button type="submit" class="btn btn-primary submit-form" style="display: none;">
+                <i class="bi bi-send me-2"></i>Submit Application
+              </button>
             </div>
-            <div class="mb-3">
-              <label for="experience" class="form-label">Years of Experience</label>
-              <select name="experience" class="form-control" required>
-                <option value="">Select Experience</option>
-                <option value="1-2">1-2 years</option>
-                <option value="3-5">3-5 years</option>
-                <option value="5-10">5-10 years</option>
-                <option value="10+">10+ years</option>
-              </select>
-            </div>
-
-            <!-- Documents -->
-            <h6 class="mb-3 text-purple"><i class="bi bi-file-earmark-text me-2"></i>Documents</h6>
-            <div class="mb-3">
-              <label for="resume" class="form-label">Resume/CV (PDF)</label>
-              <input type="file" name="resume" class="form-control" accept=".pdf" required>
-              <small class="text-muted">Max file size: 5MB</small>
-            </div>
-            <div class="mb-3">
-              <label for="certificates" class="form-label">Certificates (PDF, can select multiple)</label>
-              <input type="file" name="certificates" class="form-control" accept=".pdf" multiple>
-              <small class="text-muted">Max 3 certificates, 5MB each</small>
-            </div>
-
-            <!-- Teaching Profile -->
-            <h6 class="mb-3 text-purple"><i class="bi bi-mortarboard-fill me-2"></i>Teaching Profile</h6>
-            <div class="mb-3">
-              <label for="teaching_style" class="form-label">Teaching Style</label>
-              <select name="teaching_style" class="form-control" required>
-                <option value="">Select Style</option>
-                <option value="practical">Practical & Project-based</option>
-                <option value="theoretical">Theoretical & Concept-focused</option>
-                <option value="mixed">Mixed Approach</option>
-              </select>
-            </div>
-            <div class="mb-3">
-              <label for="availability" class="form-label">Weekly Availability (hours)</label>
-              <select name="availability" class="form-control" required>
-                <option value="">Select Availability</option>
-                <option value="0-5">0-5 hours</option>
-                <option value="5-10">5-10 hours</option>
-                <option value="10-20">10-20 hours</option>
-                <option value="20+">20+ hours</option>
-              </select>
-            </div>
-            <div class="mb-3">
-              <label for="message" class="form-label">Why do you want to teach? (Teaching Philosophy)</label>
-              <textarea name="message" rows="5" class="form-control" required 
-                placeholder="Tell us about your teaching experience, methodology, and what makes you a great teacher..."></textarea>
-            </div>
-
-            <button type="submit" class="btn btn-purple">Submit Application</button>
           </form>
         </div>
       </div>
@@ -100,29 +250,498 @@
 </div>
 
 <style>
-  .bg-purple {
-    background-color: #6f42c1;
+  :root[data-theme="light"] {
+    --hero-gradient-start: var(--primary-color);
+    --hero-gradient-end: var(--primary-dark);
+    --hero-text: #ffffff;
+    --hero-text-secondary: rgba(255, 255, 255, 0.7);
+    --card-bg: #ffffff;
+    --card-border: rgba(0, 0, 0, 0.125);
+    --icon-soft-opacity: 0.1;
+    --hover-transform: scale(1.02);
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --text-primary: #2d3748;
+    --text-secondary: #718096;
   }
-  .text-purple {
-    color: #6f42c1;
+
+  :root[data-theme="dark"] {
+    --hero-gradient-start: var(--primary-dark);
+    --hero-gradient-end: #1a1a2e;
+    --hero-text: #ffffff;
+    --hero-text-secondary: rgba(255, 255, 255, 0.7);
+    --card-bg: #2a2a3c;
+    --card-border: rgba(255, 255, 255, 0.125);
+    --icon-soft-opacity: 0.2;
+    --hover-transform: scale(1.02);
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --text-primary: #e2e8f0;
+    --text-secondary: #a0aec0;
   }
-  .btn-purple {
-    background-color: #6f42c1;
+
+  /* Hero Section */
+  .hero-section {
+    background: linear-gradient(135deg, var(--hero-gradient-start), var(--hero-gradient-end));
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-section h1,
+  .hero-section .lead {
+    color: var(--hero-text);
+  }
+
+  .hero-section .lead {
+    color: var(--hero-text-secondary);
+  }
+
+  /* Benefits Grid */
+  .benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .benefit-item {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .benefit-item:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .benefit-icon {
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
     color: white;
+    margin-bottom: 1rem;
   }
-  .btn-purple:hover {
-    background-color: #5a33a5;
+
+  .benefit-item h5 {
     color: white;
+    margin-bottom: 0.5rem;
   }
-  .card-header {
-    border-bottom: 0;
+
+  .benefit-item p {
+    color: var(--hero-text-secondary);
+    margin-bottom: 0;
+    font-size: 0.9rem;
   }
-  h6 {
-    font-weight: 600;
-    margin-top: 1.5rem;
+
+  /* Application Form */
+  .application-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    box-shadow: 0 8px 24px var(--shadow-color);
   }
+
+  .form-section {
+    background: rgba(var(--primary-rgb), 0.03);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid rgba(var(--primary-rgb), 0.1);
+  }
+
+  .section-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .section-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(var(--primary-rgb), var(--icon-soft-opacity));
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: var(--primary-color);
+    margin-right: 1rem;
+  }
+
   .form-label {
+    color: var(--text-primary);
     font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-control,
+  .form-select {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    color: var(--text-primary);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+  }
+
+  .form-control:focus,
+  .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(var(--primary-rgb), 0.25);
+  }
+
+  .upload-box {
+    background: var(--card-bg);
+    border: 2px dashed var(--card-border);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .upload-box:hover {
+    border-color: var(--primary-color);
+    background: rgba(var(--primary-rgb), 0.05);
+  }
+
+  .upload-placeholder i {
+    color: var(--primary-color);
+    opacity: 0.5;
+  }
+
+  .upload-preview {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: rgba(var(--primary-rgb), 0.05);
+    border-radius: 8px;
+  }
+
+  .upload-preview .filename {
+    flex: 1;
+    text-align: left;
+  }
+
+  .certificate-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .certificate-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 6px;
+  }
+
+  /* Animations */
+  .animate-up {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: slideUp 0.6s ease forwards;
+  }
+
+  .delay-1 { animation-delay: 0.2s; }
+  .delay-2 { animation-delay: 0.4s; }
+  .delay-3 { animation-delay: 0.6s; }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Hero Illustration */
+  .hero-illustration-wrapper {
+    position: relative;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero-illustration {
+    max-width: 100%;
+    height: auto;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.15));
+    transition: all 0.3s ease;
+  }
+
+  [data-theme="dark"] .hero-illustration {
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3)) brightness(0.9);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .benefits-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .form-section {
+      padding: 1rem;
+    }
+
+    .section-icon {
+      width: 32px;
+      height: 32px;
+      font-size: 16px;
+    }
+  }
+
+  /* Dark Mode Adjustments */
+  [data-theme="dark"] .form-section {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  [data-theme="dark"] .upload-box {
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  /* Progress Steps */
+  .progress-wrapper {
+    position: relative;
+    margin-bottom: 2rem;
+  }
+
+  .progress-steps {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .progress-step {
+    text-align: center;
+    flex: 1;
+    position: relative;
+    padding: 0 10px;
+  }
+
+  .step-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--card-bg);
+    border: 2px solid var(--card-border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 0.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .progress-step.active .step-icon {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+  }
+
+  .progress-step.completed .step-icon {
+    background: var(--success);
+    border-color: var(--success);
+    color: white;
+  }
+
+  .step-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+  }
+
+  .progress-step.active .step-label {
+    color: var(--primary-color);
+    font-weight: 600;
+  }
+
+  .progress {
+    height: 4px;
+    background: var(--card-border);
+    position: relative;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-bar {
+    background: var(--primary-color);
+    transition: width 0.3s ease;
+  }
+
+  /* Form Navigation */
+  .form-navigation {
+    border-top: 1px solid var(--card-border);
+    padding-top: 1.5rem;
+    margin-top: 2rem;
   }
 </style>
+
+<script>
+// Form validation and navigation
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('tutorForm');
+  const sections = form.querySelectorAll('.form-section');
+  const progressBar = document.querySelector('.progress-bar');
+  const progressSteps = document.querySelectorAll('.progress-step');
+  const prevBtn = form.querySelector('.prev-step');
+  const nextBtn = form.querySelector('.next-step');
+  const submitBtn = form.querySelector('.submit-form');
+  let currentSection = 1;
+
+  function updateProgress() {
+    const progress = ((currentSection - 1) / (sections.length - 1)) * 100;
+    progressBar.style.width = `${progress}%`;
+    
+    progressSteps.forEach((step, index) => {
+      const stepNum = index + 1;
+      step.classList.toggle('active', stepNum === currentSection);
+      step.classList.toggle('completed', stepNum < currentSection);
+    });
+  }
+
+  function showSection(sectionNumber) {
+    sections.forEach(section => {
+      section.style.display = 'none';
+      section.classList.remove('active');
+    });
+    
+    const targetSection = form.querySelector(`[data-section="${sectionNumber}"]`);
+    targetSection.style.display = 'block';
+    targetSection.classList.add('active');
+    
+    // Update navigation buttons
+    prevBtn.style.display = sectionNumber === 1 ? 'none' : 'block';
+    nextBtn.style.display = sectionNumber === sections.length ? 'none' : 'block';
+    submitBtn.style.display = sectionNumber === sections.length ? 'block' : 'none';
+    
+    updateProgress();
+  }
+
+  // Navigation buttons
+  prevBtn.addEventListener('click', () => {
+    if (currentSection > 1) {
+      currentSection--;
+      showSection(currentSection);
+    }
+  });
+
+  nextBtn.addEventListener('click', () => {
+    const currentSectionEl = form.querySelector(`[data-section="${currentSection}"]`);
+    const inputs = currentSectionEl.querySelectorAll('input, select, textarea');
+    let isValid = true;
+
+    inputs.forEach(input => {
+      if (input.hasAttribute('required') && !input.value) {
+        isValid = false;
+        input.classList.add('is-invalid');
+      } else {
+        input.classList.remove('is-invalid');
+      }
+    });
+
+    if (isValid && currentSection < sections.length) {
+      currentSection++;
+      showSection(currentSection);
+    }
+  });
+
+  // Enhanced file upload
+  const setupFileUpload = (uploadBox, multiple = false) => {
+    const input = uploadBox.querySelector('input[type="file"]');
+    const preview = uploadBox.querySelector('.upload-preview');
+    const placeholder = uploadBox.querySelector('.upload-placeholder');
+
+    uploadBox.addEventListener('click', () => input.click());
+    uploadBox.addEventListener('dragover', e => {
+      e.preventDefault();
+      uploadBox.classList.add('dragover');
+    });
+    uploadBox.addEventListener('dragleave', () => {
+      uploadBox.classList.remove('dragover');
+    });
+    uploadBox.addEventListener('drop', e => {
+      e.preventDefault();
+      uploadBox.classList.remove('dragover');
+      const files = e.dataTransfer.files;
+      handleFiles(files);
+    });
+
+    input.addEventListener('change', () => handleFiles(input.files));
+
+    function handleFiles(files) {
+      if (!files.length) return;
+
+      if (!multiple) {
+        const file = files[0];
+        if (file.type === 'application/pdf' && file.size <= 5 * 1024 * 1024) {
+          preview.querySelector('.filename').textContent = file.name;
+          placeholder.style.display = 'none';
+          preview.style.display = 'flex';
+        }
+      } else {
+        const certificateList = preview.querySelector('.certificate-list');
+        certificateList.innerHTML = '';
+        
+        Array.from(files).slice(0, 3).forEach(file => {
+          if (file.type === 'application/pdf' && file.size <= 5 * 1024 * 1024) {
+            const item = document.createElement('div');
+            item.className = 'certificate-item';
+            item.innerHTML = `
+              <i class="bi bi-file-pdf text-danger"></i>
+              <span class="filename">${file.name}</span>
+              <button type="button" class="btn btn-link text-danger remove-file">
+                <i class="bi bi-x-circle"></i>
+              </button>
+            `;
+            certificateList.appendChild(item);
+          }
+        });
+
+        if (certificateList.children.length > 0) {
+          placeholder.style.display = 'none';
+          preview.style.display = 'block';
+        }
+      }
+    }
+
+    // Remove file functionality
+    uploadBox.addEventListener('click', e => {
+      if (e.target.closest('.remove-file')) {
+        if (!multiple) {
+          input.value = '';
+          placeholder.style.display = 'block';
+          preview.style.display = 'none';
+        } else {
+          const item = e.target.closest('.certificate-item');
+          item.remove();
+          if (preview.querySelector('.certificate-list').children.length === 0) {
+            placeholder.style.display = 'block';
+            preview.style.display = 'none';
+          }
+        }
+      }
+    });
+  };
+
+  setupFileUpload(document.getElementById('resumeUpload'));
+  setupFileUpload(document.getElementById('certificatesUpload'), true);
+
+  // Initialize form
+  showSection(1);
+});
+</script>
 {% endblock %}

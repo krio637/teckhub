@@ -8,6 +8,7 @@ from django.core.mail import send_mail
 from django.utils import timezone
 from django.http import HttpResponseForbidden
 from django.db.models import Q, Count
+from django.db import transaction
 from .models import Course, Category, Comment, Like, Profile, Video, Review, Bookmark, PasswordReset
 from uuid import UUID
 import uuid
@@ -91,35 +92,75 @@ def home(request):
 
 def RegisterView(request): 
     if request.method == "POST":
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
+        first_name = request.POST.get('first_name', '').strip()
+        last_name = request.POST.get('last_name', '').strip()
+        username = request.POST.get('username', '').strip()
+        email = request.POST.get('email', '').strip()
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
 
         has_error = False
-        if User.objects.filter(username=username).exists():
+        if not username:
+            has_error = True
+            messages.error(request, "Username is required")
+        elif User.objects.filter(username=username).exists():
             has_error = True
             messages.error(request, "Username already exists")
-        if User.objects.filter(email=email).exists():
+
+        if not email:
+            has_error = True
+            messages.error(request, "Email is required")
+        elif User.objects.filter(email=email).exists():
             has_error = True
             messages.error(request, "Email already exists")
-        if len(password) < 5:
+
+        if not first_name:
+            has_error = True
+            messages.error(request, "First name is required")
+
+        if not last_name:
+            has_error = True
+            messages.error(request, "Last name is required")
+
+        if not password1:
+            has_error = True
+            messages.error(request, "Password is required")
+        elif len(password1) < 5:
             has_error = True
             messages.error(request, "Password must be at least 5 characters")
+        elif password1 != password2:
+            has_error = True
+            messages.error(request, "Passwords do not match")
 
         if has_error:
             return redirect('register')
 
-        User.objects.create_user(
-            first_name=first_name,
-            last_name=last_name,
-            email=email, 
-            username=username,
-            password=password
-        )
-        messages.success(request, "Account created. Login now")
-        return redirect('login')
+        try:
+            with transaction.atomic():
+                # First check if user exists
+                if User.objects.filter(username=username).exists():
+                    messages.error(request, "Username already exists")
+                    return redirect('register')
+                
+                # Create user first
+                user = User.objects.create_user(
+                    username=username,
+                    email=email,
+                    password=password1,
+                    first_name=first_name,
+                    last_name=last_name
+                )
+                
+                # Update the profile that was automatically created by the signal
+                profile = Profile.objects.get(user=user)
+                profile.role = 'student'
+                profile.save()
+                
+                messages.success(request, "Account created. Login now")
+                return redirect('login')
+        except Exception as e:
+            messages.error(request, f"Error creating account: {str(e)}")
+            return redirect('register')
 
     return render(request, 'register.html')
 
@@ -323,26 +364,30 @@ def ProfileView(request):
     user = request.user
     profile = user.profile
 
-    if request.method == 'POST':
-        user.first_name = request.POST.get('first_name')
-        user.last_name = request.POST.get('last_name')
-        user.email = request.POST.get('email')
+    # Get user's bookmarked courses
+    bookmarked_courses = Bookmark.objects.filter(user=user)
+    
+    # Get user's liked videos
+    liked_videos = Like.objects.filter(user=user)
+    
+    # Get user's comments
+    comments = Comment.objects.filter(user=user)
+    
+    # Get teacher's uploaded courses if user is a teacher
+    uploaded_courses = None
+    if profile.role == 'teacher':
+        uploaded_courses = Course.objects.filter(teacher=user)
 
-        if 'image' in request.FILES:
-            profile.image = request.FILES['image']
-
-        user.save()
-        profile.save()
-        messages.success(request, "Profile updated successfully!")
-        return redirect('profile')
-
-    uploaded_courses = Course.objects.filter(teacher=user) if profile.role == 'teacher' else None
-
-    return render(request, 'profile.html', {
-        'uploaded_courses': uploaded_courses,
+    context = {
         'user': user,
         'profile': profile,
-    })
+        'bookmarked_courses': bookmarked_courses,
+        'liked_videos': liked_videos,
+        'comments': comments,
+        'uploaded_courses': uploaded_courses,
+    }
+
+    return render(request, 'profile.html', context)
 
 
 # ---------------------- Course & Video ----------------------
@@ -350,7 +395,9 @@ def ProfileView(request):
 @login_required
 def create_course(request):
     if request.user.profile.role != 'teacher':
-        return HttpResponseForbidden("You are not allowed to create a course.")
+        messages.error(request, "You must be a teacher to create courses.")
+        return redirect('profile')
+        
     if request.method == 'POST':
         title = request.POST.get('title')
         description = request.POST.get('description')
@@ -554,16 +601,23 @@ def teacher_list_view(request):
 
 @login_required
 def teacher_profile_view(request, teacher_id):
-    teacher = get_object_or_404(User, id=teacher_id)
+    teacher = get_object_or_404(User, id=teacher_id, profile__role='teacher')
     courses = Course.objects.filter(teacher=teacher)
     videos = Video.objects.filter(course__in=courses)
+    
+    # Get teacher's stats
+    total_views = sum(video.views for video in videos)
+    total_likes = Like.objects.filter(video__in=videos).count()
+    total_comments = Comment.objects.filter(video__in=videos).count()
+    
     context = {
         'teacher': teacher,
         'courses': courses,
         'total_courses': courses.count(),
         'total_videos': videos.count(),
-        'total_likes': Like.objects.filter(video__in=videos).count(),
-        'total_comments': Comment.objects.filter(video__in=videos).count(),
+        'total_views': total_views,
+        'total_likes': total_likes,
+        'total_comments': total_comments,
     }
     return render(request, 'teacher_profile.html', context)
 
@@ -630,6 +684,10 @@ def become_tutor(request):
             certificates = request.FILES.getlist('certificates')
             
             # Validation
+            if not all([name, email, phone, expertise, experience, teaching_style, availability, message]):
+                messages.error(request, "Please fill in all required fields.")
+                return redirect('become_tutor')
+            
             if not resume:
                 messages.error(request, "Please upload your resume.")
                 return redirect('become_tutor')
@@ -668,109 +726,101 @@ def become_tutor(request):
                 cert_path = default_storage.save(f'tutor_applications/{name.strip()}/certificates/{cert_name}', cert)
                 certificate_paths.append(cert_path)
 
-            # Prepare email content
-            subject = f"New Tutor Application from {name}"
-            body = f"""
-            TUTOR APPLICATION DETAILS
-            =======================
+            # Email to admin
+            try:
+                admin_subject = f"New Tutor Application from {name}"
+                admin_body = f"""
+                TUTOR APPLICATION DETAILS
+                =======================
 
-            Personal Information:
-            -------------------
-            Full Name: {name}
-            Email Address: {email}
-            Phone Number: {phone}
+                Personal Information:
+                -------------------
+                Full Name: {name}
+                Email Address: {email}
+                Phone Number: {phone}
 
-            Professional Information:
-            ----------------------
-            Areas of Expertise: {expertise}
-            Years of Experience: {experience}
+                Professional Information:
+                ----------------------
+                Areas of Expertise: {expertise}
+                Years of Experience: {experience}
 
-            Teaching Profile:
-            ---------------
-            Teaching Style: {teaching_style}
-            Weekly Availability: {availability} hours
+                Teaching Profile:
+                ---------------
+                Teaching Style: {teaching_style}
+                Weekly Availability: {availability} hours
 
-            Teaching Philosophy:
-            ------------------
-            {message}
+                Teaching Philosophy:
+                ------------------
+                {message}
 
-            Documents Submitted:
-            -----------------
-            Resume: {resume_path}
-            Certificates: {', '.join(certificate_paths) if certificate_paths else 'None submitted'}
+                Documents Submitted:
+                -----------------
+                Resume: {resume_path}
+                Certificates: {', '.join(certificate_paths) if certificate_paths else 'None submitted'}
 
-            Application Status: Under Review
-            """
+                Application Status: Under Review
+                """
 
-            # Send email
-            send_mail(
-                subject,
-                body,
-                settings.DEFAULT_FROM_EMAIL,
-                [settings.CONTACT_EMAIL],
-                fail_silently=False,
-            )
+                send_mail(
+                    subject=admin_subject,
+                    message=admin_body,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[settings.CONTACT_EMAIL],
+                    fail_silently=False,
+                )
+                print(f"Admin email sent successfully to {settings.CONTACT_EMAIL}")
+            except Exception as e:
+                print(f"Error sending admin email: {str(e)}")
+                messages.warning(request, "Your application was received but there was an issue notifying the admin.")
 
-            # Send confirmation email to applicant
-            applicant_subject = "Thank you for your tutor application - TeckHub"
-            applicant_body = f"""
-            Dear {name},
+            # Email to applicant
+            try:
+                applicant_subject = "Thank you for your tutor application - TeckHub"
+                applicant_body = f"""
+                Dear {name},
 
-            Thank you for applying to become a tutor at TeckHub. We have received your application and all the submitted documents.
+                Thank you for applying to become a tutor at TeckHub. We have received your application and all the submitted documents.
 
-            Application Details:
-            ------------------
-            Name: {name}
-            Email: {email}
-            Phone: {phone}
-            Expertise Areas: {expertise}
-            Experience: {experience}
-            Teaching Style: {teaching_style}
-            Weekly Availability: {availability} hours
+                Application Details:
+                ------------------
+                Name: {name}
+                Email: {email}
+                Phone: {phone}
+                Expertise Areas: {expertise}
+                Experience: {experience}
+                Teaching Style: {teaching_style}
+                Weekly Availability: {availability} hours
 
-            Our team will carefully review your application and get back to you within 3-5 business days.
-            If you have any questions in the meantime, please don't hesitate to contact us.
+                Our team will carefully review your application and get back to you within 3-5 business days.
+                If you have any questions in the meantime, please don't hesitate to contact us.
 
-            Best regards,
-            TeckHub Team
-            """
+                Best regards,
+                TeckHub Team
+                """
 
-            send_mail(
-                applicant_subject,
-                applicant_body,
-                settings.DEFAULT_FROM_EMAIL,
-                [email],
-                fail_silently=False,
-            )
+                send_mail(
+                    subject=applicant_subject,
+                    message=applicant_body,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[email],
+                    fail_silently=False,
+                )
+                print(f"Applicant email sent successfully to {email}")
+                messages.success(request, "Your application has been submitted successfully. Please check your email for confirmation.")
+            except Exception as e:
+                print(f"Error sending applicant email: {str(e)}")
+                messages.warning(request, "Your application was submitted but there was an issue sending the confirmation email.")
 
-            messages.success(request, "Your application has been submitted successfully. Please check your email for confirmation.")
             return redirect('become_tutor')
 
         except Exception as e:
-            messages.error(request, f"There was an error processing your application: {str(e)}")
+            print(f"Error processing application: {str(e)}")
+            messages.error(request, f"There was an error processing your application. Please try again.")
             return redirect('become_tutor')
 
     return render(request, 'become_tutor.html')
 
-@login_required
-def course_detail_view(request, course_id):
-    course = get_object_or_404(Course, id=course_id)
-    videos = course.videos.all()
-    total_views = sum(video.views for video in videos)
-    total_likes = Like.objects.filter(video__in=videos).count()
-    total_comments = Comment.objects.filter(video__in=videos).count()
-    is_bookmarked = Bookmark.objects.filter(user=request.user, course=course).exists()
-    
-    context = {
-        'course': course,
-        'videos': videos,
-        'total_videos': videos.count(),
-        'total_views': total_views,
-        'total_likes': total_likes,
-        'total_comments': total_comments,
-        'is_bookmarked': is_bookmarked,
-    }
-    return render(request, 'course_detail.html', context)
+
 
 @login_required
 def search(request):
@@ -812,3 +862,36 @@ def search(request):
     }
     
     return render(request, 'search.html', context)
+
+@login_required
+def become_teacher(request):
+    if request.method == 'POST':
+        user = request.user
+        profile = user.profile
+        
+        # Update profile fields
+        profile.role = 'teacher'
+        profile.bio = request.POST.get('message', '')
+        profile.teaching_style = request.POST.get('teaching_style', '')
+        profile.availability = request.POST.get('availability', '')
+        profile.save()
+        
+        messages.success(request, "Congratulations! You are now a teacher.")
+        return redirect('profile')
+        
+    return render(request, 'become_tutor.html')
+
+@login_required
+def enroll_course(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+    
+    # Check if user is already enrolled
+    if course in request.user.profile.enrolled_courses.all():
+        messages.info(request, 'You are already enrolled in this course.')
+        return redirect('course_detail', course_id=course_id)
+    
+    # Add course to user's enrolled courses
+    request.user.profile.enrolled_courses.add(course)
+    messages.success(request, f'Successfully enrolled in {course.title}!')
+    
+    return redirect('course_detail', course_id=course_id)

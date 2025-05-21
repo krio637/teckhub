@@ -1,7 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 import uuid
 
 class PasswordReset(models.Model):
@@ -19,26 +17,20 @@ class Profile(models.Model):
         ('teacher', 'Teacher'),
     )
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+    image = models.ImageField(upload_to='profile_pics/', default='profile_pics/default.png', null=True, blank=True)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='student')
+    bio = models.TextField(blank=True, null=True)
+    teaching_style = models.CharField(max_length=50, blank=True, null=True)
+    availability = models.CharField(max_length=20, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.user.username}'s Profile"
+        return f"{self.user.username}'s Profile" if self.user else "Unassigned Profile"
 
-# Signal to create Profile when User is created
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
-
-# Signal to save Profile when User is saved
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    try:
-        instance.profile.save()
-    except Profile.DoesNotExist:
-        Profile.objects.create(user=instance)
+    def get_image_url(self):
+        if self.image and hasattr(self.image, 'url'):
+            return self.image.url
+        return '/media/profile_pics/default.png'
 
 
 class Review(models.Model):
@@ -61,7 +53,7 @@ class Category(models.Model):
 class Course(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    thumbnail = models.ImageField(upload_to='course_thumbnails/')
+    thumbnail = models.ImageField(upload_to='course_thumbnails/', null=True, blank=True)
     teacher = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -69,6 +61,11 @@ class Course(models.Model):
     def __str__(self):
         return self.title
 
+    def get_thumbnail_url(self):
+        try:
+            return self.thumbnail.url if self.thumbnail else '/static/images/default-thumbnail.jpg'
+        except:
+            return '/static/images/default-thumbnail.jpg'
 
 
 class Video(models.Model):

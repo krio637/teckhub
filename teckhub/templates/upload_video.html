@@ -1,22 +1,77 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block content %}
-<div class="container mt-5">
-    <h2>Upload New Video to "{{ course.title }}"</h2>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="mb-3">
-            <label class="form-label">Video Title</label>
-            <input type="text" name="title" class="form-control" required>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card glass-card shadow-sm">
+        <div class="card-body p-4">
+          <h3 class="text-center text-purple mb-4">Upload Video to {{ course.title }}</h3>
+          
+          <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+              <label class="form-label">Video Title</label>
+              <input type="text" name="title" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Video File</label>
+              <input type="file" name="video_file" class="form-control" accept="video/*" required>
+              <small class="text-muted">Supported formats: MP4, WebM, MOV. Max size: 500MB</small>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Video Thumbnail</label>
+              <input type="file" name="thumbnail" class="form-control" accept="image/*" required>
+              <small class="text-muted">Recommended size: 1280x720 pixels</small>
+            </div>
+
+            <div class="text-center">
+              <button type="submit" class="btn btn-success btn-lg">
+                <i class="bi bi-cloud-upload me-2"></i>Upload Video
+              </button>
+            </div>
+          </form>
         </div>
-        <div class="mb-3">
-            <label class="form-label">Video File</label>
-            <input type="file" name="video_file" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Thumbnail</label>
-            <input type="file" name="thumbnail" class="form-control" required>
-        </div>
-        <button type="submit" class="btn btn-success">Upload Video</button>
-    </form>
+      </div>
+    </div>
+  </div>
 </div>
+
+<style>
+  .glass-card {
+    background: rgba(255, 255, 255, 0.86);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    border: none;
+  }
+
+  .text-purple {
+    color: #6f42c1;
+  }
+
+  [data-theme="dark"] .glass-card {
+    background: rgba(30, 30, 30, 0.86);
+    color: white;
+  }
+
+  [data-theme="dark"] .form-control {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: white;
+  }
+
+  [data-theme="dark"] .form-control:focus {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: #6f42c1;
+    color: white;
+  }
+
+  [data-theme="dark"] .form-control::placeholder {
+    color: #a0aec0;
+  }
+</style>
 {% endblock %}

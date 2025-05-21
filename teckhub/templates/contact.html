@@ -3,9 +3,134 @@
 
 {% block title %}Contact Us - TeckHub{% endblock %}
 
+{% block extra_css %}
+<style>
+  .form-floating > .form-control,
+  .form-floating > .form-control-plaintext {
+    height: calc(3.5rem + 2px);
+    line-height: 1.25;
+  }
+
+  .form-floating > label {
+    padding: 1rem 0.75rem;
+  }
+
+  .form-floating > .form-control:focus ~ label,
+  .form-floating > .form-control:not(:placeholder-shown) ~ label {
+    opacity: 1;
+    transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+  }
+
+  .contact-info-item .stats-icon-box {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+  }
+
+  .contact-info-item .stats-icon-box i {
+    font-size: 1.5rem;
+  }
+
+  .bg-primary-soft {
+    background-color: rgba(123, 44, 191, 0.1);
+  }
+
+  .bg-success-soft {
+    background-color: rgba(40, 167, 69, 0.1);
+  }
+
+  .bg-warning-soft {
+    background-color: rgba(255, 193, 7, 0.1);
+  }
+
+  .text-primary {
+    color: var(--primary-color) !important;
+  }
+
+  .text-success {
+    color: #28a745 !important;
+  }
+
+  .text-warning {
+    color: #ffc107 !important;
+  }
+
+  /* Dark mode adjustments */
+  [data-theme="dark"] .bg-primary-soft {
+    background-color: rgba(123, 44, 191, 0.2);
+  }
+
+  [data-theme="dark"] .bg-success-soft {
+    background-color: rgba(40, 167, 69, 0.2);
+  }
+
+  [data-theme="dark"] .bg-warning-soft {
+    background-color: rgba(255, 193, 7, 0.2);
+  }
+
+  [data-theme="dark"] .form-floating > .form-control:focus::placeholder {
+    color: transparent;
+  }
+
+  [data-theme="dark"] textarea.form-control {
+    min-height: 150px;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
+<style>
+  .hero-section {
+    background: linear-gradient(135deg, #7b2cbf 0%, #3a0ca3 100%);
+    padding: 80px 0;
+    margin-bottom: 50px;
+  }
+
+  .hero-illustration {
+    max-width: 100%;
+    height: auto;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+  }
+
+  .hero-illustration-wrapper {
+    padding: 20px;
+  }
+
+  .animate-up {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s ease forwards;
+  }
+
+  .delay-1 {
+    animation-delay: 0.2s;
+  }
+
+  .delay-2 {
+    animation-delay: 0.4s;
+  }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .hover-lift {
+    transition: transform 0.2s ease;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-5px);
+  }
+</style>
+
 <!-- Hero Section -->
-<div class="hero-section py-5 mb-5">
+<div class="hero-section">
   <div class="container">
     <div class="row align-items-center">
       <div class="col-lg-6">
@@ -14,18 +139,21 @@
       </div>
       <div class="col-lg-6 d-none d-lg-block text-center">
         <div class="hero-illustration-wrapper animate-up delay-2">
-          <img src="{% static 'images/contact-illustration.svg' %}" alt="Contact Us" class="hero-illustration">
+          <img src="{% static 'images/contact-illustration.svg' %}" 
+               alt="Contact Us" 
+               class="hero-illustration"
+               onerror="this.onerror=null; this.src='{% static 'images/default-contact.svg' %}'; this.classList.add('default-illustration');">
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<div class="container">
+<div class="container py-5">
   <div class="row g-4">
     <!-- Contact Form -->
     <div class="col-lg-7">
-      <div class="card hover-lift h-100 animate-up delay-1">
+      <div class="card shadow-sm h-100 animate-up delay-1">
         <div class="card-body p-4">
           <h3 class="card-title mb-4">Send us a Message</h3>
           <form method="post" class="needs-validation" novalidate>
@@ -56,7 +184,7 @@
                 </div>
               </div>
               <div class="col-12">
-                <button type="submit" class="btn btn-primary w-100 hover-lift">
+                <button type="submit" class="btn btn-purple w-100">
                   <i class="bi bi-send me-2"></i>Send Message
                 </button>
               </div>
@@ -68,7 +196,7 @@
 
     <!-- Contact Info -->
     <div class="col-lg-5">
-      <div class="card hover-lift h-100 animate-up delay-2">
+      <div class="card shadow-sm h-100 animate-up delay-2">
         <div class="card-body p-4">
           <h3 class="card-title mb-4">Contact Information</h3>
           
@@ -78,7 +206,7 @@
             </div>
             <div>
               <h5 class="mb-1">Phone Numbers</h5>
-              <p class="mb-0 text-secondary">123-456-7890<br>111-222-3333</p>
+              <p class="mb-0 text-muted">123-456-7890<br>111-222-3333</p>
             </div>
           </div>
 
@@ -88,7 +216,7 @@
             </div>
             <div>
               <h5 class="mb-1">Email Addresses</h5>
-              <p class="mb-0 text-secondary">TeckHub@gmail.com<br>TeckHub03@gmail.com</p>
+              <p class="mb-0 text-muted">TeckHub@gmail.com<br>TeckHub03@gmail.com</p>
             </div>
           </div>
 
@@ -98,7 +226,7 @@
             </div>
             <div>
               <h5 class="mb-1">Office Address</h5>
-              <p class="mb-0 text-secondary">Flat No. 1, J-1 Building,<br>Jogeshwari, Mumbai,<br>India - 400104</p>
+              <p class="mb-0 text-muted">Flat No. 1, J-1 Building,<br>Jogeshwari, Mumbai,<br>India - 400104</p>
             </div>
           </div>
         </div>
@@ -106,34 +234,4 @@
     </div>
   </div>
 </div>
-
-<style>
-  .form-floating > .form-control,
-  .form-floating > .form-control-plaintext {
-    height: calc(3.5rem + 2px);
-    line-height: 1.25;
-  }
-
-  .form-floating > label {
-    padding: 1rem 0.75rem;
-  }
-
-  .form-floating > .form-control:focus ~ label,
-  .form-floating > .form-control:not(:placeholder-shown) ~ label {
-    transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
-  }
-
-  .contact-info-item .stats-icon-box {
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 12px;
-  }
-
-  .contact-info-item .stats-icon-box i {
-    font-size: 1.5rem;
-  }
-</style>
 {% endblock %}

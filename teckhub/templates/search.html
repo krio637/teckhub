@@ -44,8 +44,7 @@
                   <img src="{% static 'images/default-thumbnail.jpg' %}" alt="Default thumbnail">
                 {% endif %}
                 <div class="course-overlay">
-                  <a href="{% url 'course_videos' course.id %}" class="btn btn-light">
-                    <i class="bi bi-play-circle me-2"></i>View Course
+                                    <a href="{% url 'playlist' course.id %}" class="btn btn-light">                    <i class="bi bi-play-circle me-2"></i>View Course
                   </a>
                 </div>
               </div>

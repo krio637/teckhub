@@ -26,7 +26,7 @@ urlpatterns = [
     # Courses
     path('courses/', views.course_list, name='course_list'),
     path('courses/upload/', views.upload_course, name='upload_course'),
-    path('courses/<int:course_id>/', views.course_detail_view, name='course_detail'),
+    path('courses/<int:course_id>/enroll/', views.enroll_course, name='enroll_course'),
     path('courses/<int:course_id>/playlist/', views.course_videos, name='course_videos'),
     path('courses/<int:course_id>/upload-video/', views.upload_video, name='upload_video'),
     path('course/<int:course_id>/edit/', views.edit_course, name='edit_course'),
@@ -40,7 +40,8 @@ urlpatterns = [
     # Teachers
     path('teachers/', views.teacher_list_view, name='teacher_list'),
     path('teacher/<int:teacher_id>/', views.teacher_profile_view, name='teacher_profile'),
-    path('become-tutor/', views.become_tutor, name='become_tutor'),path('become-tutor/', views.become_tutor, name='become_tutor'),
+    path('become-tutor/', views.become_tutor, name='become_tutor'),
+    path('become-teacher/', views.become_teacher, name='become_teacher'),
 
     # Static
     path("about/", about, name="about"),

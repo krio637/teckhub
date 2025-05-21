@@ -1,244 +1,486 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block content %}
-
-<div class="container-fluid p-0">
-  <!-- Hero Section for Become a Tutor -->
-  <div class="tutor-hero-section text-center py-5">
-    <div class="container">
-      <div class="row align-items-center">
-        <div class="col-md-6 text-md-start">
-          <h1 class="display-4 fw-bold text-white mb-4">Become a Tutor</h1>
-          <p class="lead text-white mb-4">Share your knowledge, inspire others, and earn while teaching. Join our community of expert educators.</p>
-          <div class="stats-container d-flex gap-4 mb-4">
-            <div class="stat-item">
-              <h3 class="text-purple">500+</h3>
-              <p class="text-white">Active Students</p>
+<!-- Hero Section -->
+<div class="hero-section py-5 mb-5">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <h1 class="display-4 fw-bold text-white mb-4 animate-up">Our Expert Teachers</h1>
+        <p class="lead text-white-50 mb-4 animate-up delay-1">Learn from industry experts and experienced professionals. Our teachers are passionate about sharing their knowledge.</p>
+        
+        <div class="stats-container d-flex gap-4 mb-4 animate-up delay-2">
+          <div class="stat-item text-center hover-lift">
+            <div class="stats-icon-box bg-primary-soft mb-2">
+              <i class="bi bi-people text-primary"></i>
             </div>
-            <div class="stat-item">
-              <h3 class="text-purple">50+</h3>
-              <p class="text-white">Expert Tutors</p>
-            </div>
-            <div class="stat-item">
-              <h3 class="text-purple">100+</h3>
-              <p class="text-white">Courses</p>
-            </div>
+            <h3 class="mb-0">500+</h3>
+            <small>Active Students</small>
           </div>
-          <a href="{% url 'become_tutor' %}" class="btn btn-purple btn-lg">Start Teaching Today</a>
-        </div>
-        <div class="col-md-6 d-none d-md-block text-center">
-          <div class="hero-icon-container">
-            <i class="bi bi-person-video3 hero-icon"></i>
+          <div class="stat-item text-center hover-lift">
+            <div class="stats-icon-box bg-success-soft mb-2">
+              <i class="bi bi-person-video3 text-success"></i>
+            </div>
+            <h3 class="mb-0">50+</h3>
+            <small>Expert Tutors</small>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Search and Teacher List Section -->
-  <div class="container my-5">
-    <div class="row mb-4">
-      <div class="col-md-6">
-        <h3 class="mb-0">Our Expert Teachers</h3>
-        <p class="text-muted">Learn from the best in the industry</p>
-      </div>
-      <div class="col-md-6">
-        <div class="search-box">
-          <i class="bi bi-search search-icon"></i>
-          <input type="text" id="searchBox" class="form-control form-control-lg" placeholder="Search tutors...">
-        </div>
-      </div>
-    </div>
-
-    <div class="row g-4">
-      {% for teacher in teachers %}
-      <div class="col-md-4 mb-4 teacher-card">
-        <div class="card h-100 teacher-profile-card">
-          <div class="card-body text-center">
-            <div class="teacher-image-wrapper mb-3">
-              <img src="{% if teacher.profile.image %}{{ teacher.profile.image.url }}{% else %}{% static 'images/avatar.png' %}{% endif %}" 
-                   alt="{{ teacher.username }}" class="rounded-circle">
+          <div class="stat-item text-center hover-lift">
+            <div class="stats-icon-box bg-warning-soft mb-2">
+              <i class="bi bi-collection-play text-warning"></i>
             </div>
-            <h5 class="card-title mb-1">{{ teacher.username }}</h5>
-            <p class="text-muted small mb-3">{{ teacher.profile.role }}</p>
-            <div class="stats-row">
-              <div class="stat-item">
-                <i class="bi bi-collection-play text-purple"></i>
-                <span>{{ teacher.total_courses }} courses</span>
-              </div>
-              <div class="stat-item">
-                <i class="bi bi-play-circle text-purple"></i>
-                <span>{{ teacher.total_videos }} videos</span>
-              </div>
-              <div class="stat-item">
-                <i class="bi bi-heart text-purple"></i>
-                <span>{{ teacher.total_likes }} likes</span>
-              </div>
-            </div>
-            <a href="{% url 'teacher_profile' teacher.id %}" class="btn btn-purple mt-3 w-100">View Profile</a>
+            <h3 class="mb-0">100+</h3>
+            <small>Courses</small>
           </div>
         </div>
+        
+        <div class="animate-up delay-3">
+          <a href="{% url 'become_tutor' %}" class="btn btn-light btn-lg hover-lift">
+            <i class="bi bi-person-video3 me-2"></i>Become a Teacher
+          </a>
+        </div>
       </div>
-      {% endfor %}
+      <div class="col-lg-6 d-none d-lg-block">
+        <div class="hero-illustration-wrapper animate-up delay-3">
+          <img src="{% static 'images/teacher-illustration.svg' %}" 
+               alt="Teaching Illustration" 
+               class="hero-illustration"
+               onerror="this.onerror=null; this.src='{% static 'images/default-thumbnail.jpg' %}'">
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
+<!-- Teachers Section -->
+<div class="container pb-5">
+  <div class="section-header d-flex align-items-center justify-content-between mb-4">
+    <div>
+      <h3 class="mb-1">Meet Our Teachers</h3>
+      <p class="text-secondary mb-0">Discover your perfect mentor</p>
+    </div>
+    <div class="search-box-wrapper">
+      <div class="search-box">
+        <i class="bi bi-search search-icon"></i>
+        <input type="text" id="searchBox" class="form-control" placeholder="Search teachers...">
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    {% for teacher in teachers %}
+    <div class="col-md-4">
+      <div class="card teacher-card hover-lift h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <div class="teacher-avatar-wrapper">
+              <img src="{{ teacher.profile.get_image_url }}" alt="{{ teacher.get_full_name }}" 
+                   class="teacher-avatar">
+              <div class="status-badge">
+                <i class="bi bi-patch-check-fill"></i>
+              </div>
+            </div>
+            <div class="teacher-info">
+              <h5 class="mb-1">{{ teacher.get_full_name }}</h5>
+              <p class="text-muted mb-0">{{ teacher.profile.teaching_style|default:"Teacher" }}</p>
+            </div>
+          </div>
+          
+          <p class="card-text text-muted mb-3">{{ teacher.profile.bio|truncatewords:20|default:"No bio available" }}</p>
+          
+          <div class="teacher-stats mb-3">
+            <div class="row g-2">
+              <div class="col-4">
+                <div class="stat-box bg-primary-soft text-center p-2 rounded">
+                  <div class="stat-icon mb-1">
+                    <i class="bi bi-collection-play"></i>
+                  </div>
+                  <div class="stat-value">{{ teacher.total_courses }}</div>
+                  <div class="stat-label">Courses</div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="stat-box bg-success-soft text-center p-2 rounded">
+                  <div class="stat-icon mb-1">
+                    <i class="bi bi-play-circle"></i>
+                  </div>
+                  <div class="stat-value">{{ teacher.total_videos }}</div>
+                  <div class="stat-label">Videos</div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="stat-box bg-warning-soft text-center p-2 rounded">
+                  <div class="stat-icon mb-1">
+                    <i class="bi bi-hand-thumbs-up"></i>
+                  </div>
+                  <div class="stat-value">{{ teacher.total_likes }}</div>
+                  <div class="stat-label">Likes</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {% if teacher.courses %}
+          <div class="courses-preview mb-3">
+            <h6 class="section-title mb-2">Latest Courses</h6>
+            <div class="course-list">
+              {% for course in teacher.courses %}
+              <a href="{% url 'playlist' course.id %}" class="course-item">
+                <i class="bi bi-play-circle me-2"></i>
+                <span>{{ course.title }}</span>
+              </a>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+
+          <a href="{% url 'teacher_profile' teacher.id %}" class="btn btn-primary w-100 hover-lift">
+            <i class="bi bi-person-badge me-2"></i>View Profile
+          </a>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+      <div class="empty-state text-center py-5">
+        <i class="bi bi-person-video3 display-4 text-muted mb-3"></i>
+        <h4>No Teachers Found</h4>
+        <p class="text-muted mb-0">We're currently updating our teacher profiles.</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
 <style>
-  .tutor-hero-section {
-    background: linear-gradient(135deg, rgba(123, 44, 191, 0.9), rgba(0, 0, 0, 0.8));
-    padding: 100px 0;
+  :root[data-theme="light"] {
+    --hero-gradient-start: var(--primary-color);
+    --hero-gradient-end: var(--primary-dark);
+    --hero-text: #ffffff;
+    --hero-text-secondary: rgba(255, 255, 255, 0.7);
+    --card-bg: #ffffff;
+    --card-border: rgba(0, 0, 0, 0.125);
+    --icon-soft-opacity: 0.1;
+    --hover-transform: scale(1.02);
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --text-primary: #2d3748;
+    --text-secondary: #718096;
+    --badge-bg: #f8f9fa;
+    --badge-text: #2d3748;
+  }
+
+  :root[data-theme="dark"] {
+    --hero-gradient-start: var(--primary-dark);
+    --hero-gradient-end: #1a1a2e;
+    --hero-text: #ffffff;
+    --hero-text-secondary: rgba(255, 255, 255, 0.7);
+    --card-bg: #2a2a3c;
+    --card-border: rgba(255, 255, 255, 0.125);
+    --icon-soft-opacity: 0.2;
+    --hover-transform: scale(1.02);
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --text-primary: #e2e8f0;
+    --text-secondary: #a0aec0;
+    --badge-bg: #374151;
+    --badge-text: #e2e8f0;
+  }
+
+  /* Hero Section */
+  .hero-section {
+    background: linear-gradient(135deg, var(--hero-gradient-start), var(--hero-gradient-end));
     position: relative;
     overflow: hidden;
   }
 
-  .tutor-hero-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  .hero-section h1,
+  .hero-section .lead {
+    color: var(--hero-text);
   }
 
-  .hero-icon-container {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    width: 300px;
-    height: 300px;
+  .hero-section .lead {
+    color: var(--hero-text-secondary);
+  }
+
+  /* Stats */
+  .stats-icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  }
-
-  .hero-icon {
-    font-size: 120px;
-    color: white;
-    opacity: 0.9;
-  }
-
-  .text-purple { 
-    color: #7b2cbf; 
-  }
-
-  .btn-purple {
-    background-color: #7b2cbf;
-    color: white;
-    border: none;
-    padding: 10px 25px;
-    transition: all 0.3s ease;
-  }
-
-  .btn-purple:hover {
-    background-color: #5a189a;
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(123, 44, 191, 0.3);
-  }
-
-  .teacher-profile-card {
-    border: none;
-    border-radius: 15px;
-    transition: all 0.3s ease;
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px);
-  }
-
-  .teacher-profile-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-  }
-
-  .teacher-image-wrapper {
-    width: 120px;
-    height: 120px;
-    margin: 0 auto;
-    position: relative;
-  }
-
-  .teacher-image-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border: 3px solid #7b2cbf;
-    padding: 3px;
-  }
-
-  .stats-row {
-    display: flex;
-    justify-content: space-around;
-    margin: 20px 0;
-    padding: 10px 0;
-    border-top: 1px solid #eee;
-    border-bottom: 1px solid #eee;
+    font-size: 24px;
   }
 
   .stat-item {
-    text-align: center;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 1.5rem;
+    min-width: 140px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
   }
 
-  .stat-item i {
-    display: block;
-    font-size: 1.5rem;
-    margin-bottom: 5px;
+  .stat-item h3 {
+    color: var(--hero-text);
+    font-size: 2rem;
+    margin-bottom: 0.25rem;
   }
 
+  .stat-item small {
+    color: var(--hero-text-secondary);
+  }
+
+  /* Teacher Cards */
+  .teacher-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    transition: all 0.3s ease;
+  }
+
+  .teacher-avatar-wrapper {
+    position: relative;
+    margin-right: 1rem;
+  }
+
+  .teacher-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--card-border);
+  }
+
+  .status-badge {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: var(--hero-gradient-start);
+    color: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    border: 2px solid var(--card-bg);
+  }
+
+  .teacher-info h5 {
+    color: var(--text-primary);
+    font-size: 1.1rem;
+  }
+
+  /* Updated Teacher Stats */
+  .teacher-stats .stat-box {
+    border-radius: 12px;
+    height: 100%;
+    transition: all 0.3s ease;
+  }
+
+  .teacher-stats .stat-box:hover {
+    transform: translateY(-2px);
+  }
+
+  .teacher-stats .stat-icon {
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    opacity: 0.8;
+  }
+
+  .teacher-stats .stat-value {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.2;
+  }
+
+  .teacher-stats .stat-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Updated Background Colors */
+  .bg-primary-soft {
+    background-color: rgba(var(--primary-rgb), 0.1);
+  }
+
+  .bg-success-soft {
+    background-color: rgba(25, 135, 84, 0.1);
+  }
+
+  .bg-warning-soft {
+    background-color: rgba(255, 193, 7, 0.1);
+  }
+
+  /* Course List */
+  .section-title {
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  .course-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .course-item {
+    padding: 0.75rem;
+    border-radius: 8px;
+    background: var(--badge-bg);
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+  }
+
+  .course-item:hover {
+    background: var(--hero-gradient-start);
+    color: white;
+  }
+
+  /* Search Box */
   .search-box {
     position: relative;
   }
 
   .search-icon {
     position: absolute;
-    left: 15px;
+    left: 1rem;
     top: 50%;
     transform: translateY(-50%);
-    color: #7b2cbf;
+    color: var(--text-secondary);
   }
 
-  #searchBox {
-    padding-left: 45px;
-    border-radius: 25px;
-    border: 2px solid #eee;
+  .search-box input {
+    padding-left: 2.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--card-border);
+    background: var(--card-bg);
+    color: var(--text-primary);
   }
 
-  #searchBox:focus {
-    border-color: #7b2cbf;
-    box-shadow: none;
+  /* Animations */
+  .animate-up {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: slideUp 0.6s ease forwards;
   }
 
+  .delay-1 { animation-delay: 0.2s; }
+  .delay-2 { animation-delay: 0.4s; }
+  .delay-3 { animation-delay: 0.6s; }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Hover Effects */
+  .hover-lift {
+    transition: all 0.3s ease;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px var(--shadow-color);
+  }
+
+  /* Empty State */
+  .empty-state {
+    padding: 3rem 1.5rem;
+    border-radius: 1rem;
+    background: var(--card-bg);
+    border: 2px dashed var(--card-border);
+  }
+
+  /* Responsive */
   @media (max-width: 768px) {
-    .tutor-hero-section {
-      padding: 50px 0;
+    .stats-container {
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .stat-item {
+      min-width: calc(50% - 0.5rem);
+    }
+
+    .section-header {
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .search-box {
+      width: 100%;
+    }
+
+    .teacher-stats .stat-value {
+      font-size: 1.1rem;
     }
     
-    .stats-container {
-      flex-direction: column;
-      gap: 20px;
+    .teacher-stats .stat-label {
+      font-size: 0.7rem;
     }
+  }
 
-    .hero-icon-container {
-      width: 200px;
-      height: 200px;
-      margin-top: 30px;
-    }
+  /* Hero Illustration */
+  .hero-illustration-wrapper {
+    position: relative;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-    .hero-icon {
-      font-size: 80px;
-    }
+  .hero-illustration {
+    max-width: 100%;
+    height: auto;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.15));
+    transition: all 0.3s ease;
+  }
+
+  [data-theme="dark"] .hero-illustration {
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3)) brightness(0.9);
   }
 </style>
 
 <script>
-  document.getElementById("searchBox").addEventListener("keyup", function() {
-    const search = this.value.toLowerCase();
-    document.querySelectorAll(".teacher-card").forEach(card => {
-      card.style.display = card.textContent.toLowerCase().includes(search) ? "block" : "none";
-    });
-  });
-</script>
+// Add search functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const searchBox = document.getElementById('searchBox');
+    const teacherCards = document.querySelectorAll('.col-md-4');
 
+    searchBox.addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+
+        teacherCards.forEach(card => {
+            const teacherName = card.querySelector('.teacher-info h5').textContent.toLowerCase();
+            const teacherBio = card.querySelector('.card-text').textContent.toLowerCase();
+            const teachingStyle = card.querySelector('.teacher-info p').textContent.toLowerCase();
+
+            if (teacherName.includes(searchTerm) || 
+                teacherBio.includes(searchTerm) || 
+                teachingStyle.includes(searchTerm)) {
+                card.style.display = '';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
 {% endblock %}

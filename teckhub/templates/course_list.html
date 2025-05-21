@@ -41,16 +41,16 @@
 
   .course-profile-card {
     border: none;
-    border-radius: 15px;
+    border-radius: 12px;
     transition: all 0.3s ease;
     background: white;
     overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
   }
 
   .thumbnail-container {
     position: relative;
-    height: 200px;
+    height: 160px;
     overflow: hidden;
   }
 
@@ -63,13 +63,53 @@
   .instructor-info {
     display: flex;
     align-items: center;
+    margin-bottom: 0.75rem !important;
   }
 
   .instructor-info img {
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
-    margin-right: 10px;
+    margin-right: 8px;
+  }
+
+  .card-body {
+    padding: 1rem;
+  }
+
+  .card-title {
+    font-size: 1rem;
+    line-height: 1.4;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .course-stats {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.875rem;
+  }
+
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .card-footer {
+    padding: 0.75rem 1rem;
+  }
+
+  .btn-sm {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .col-md-4 {
+    padding: 0.75rem;
+  }
+
+  .mb-4 {
+    margin-bottom: 1rem !important;
   }
 </style>
 
@@ -134,7 +174,7 @@
       {% for course in courses %}
       <div class="col-md-4 mb-4 course-card-wrapper">
         <div class="card course-profile-card h-100">
-          <a href="{% url 'course_detail' course.id %}" class="text-decoration-none position-relative">
+          <a href="{% url 'playlist' course.id %}" class="text-decoration-none position-relative">
             <div class="thumbnail-container">
               {% if course.thumbnail %}
                 <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}">
@@ -154,6 +194,7 @@
 
           <div class="card-body">
             <div class="instructor-info mb-3">
+              {% if course.teacher and course.teacher.id %}
               <a href="{% url 'teacher_profile' course.teacher.id %}" class="text-decoration-none">
                 {% if course.teacher.profile.image %}
                   <img src="{{ course.teacher.profile.image.url }}" alt="Profile">
@@ -165,6 +206,15 @@
                   <small class="text-muted">{{ course.created_at|date:"M d, Y" }}</small>
                 </div>
               </a>
+              {% else %}
+              <div class="text-decoration-none">
+                <img src="{% static 'default_avatar.png' %}" alt="Default">
+                <div>
+                  <div class="text-dark fw-medium">No teacher assigned</div>
+                  <small class="text-muted">{{ course.created_at|date:"M d, Y" }}</small>
+                </div>
+              </div>
+              {% endif %}
             </div>
 
             <h5 class="card-title text-dark mb-3">{{ course.title }}</h5>
@@ -186,7 +236,7 @@
 
           <div class="card-footer bg-transparent">
             <div class="d-flex justify-content-between align-items-center">
-              <a href="{% url 'course_detail' course.id %}" class="btn btn-purple btn-sm">
+              <a href="{% url 'playlist' course.id %}" class="btn btn-purple btn-sm">
                 <i class="bi bi-play-circle me-1"></i>Start Learning
               </a>
               <form action="{% url 'toggle_bookmark' course.id %}" method="post" class="d-inline">

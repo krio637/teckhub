@@ -1,65 +1,388 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}{{ teacher.username }}'s Profile{% endblock %}
 
 {% block content %}
-<div class="container my-4">
-  <div class="card p-4">
-    <div class="text-center">
-      <img src="{% if teacher.profile.image %}{{ teacher.profile.image.url }}{% else %}{% static 'images/avatar.png' %}{% endif %}" 
-           class="rounded-circle mb-3" width="100" height="100" alt="Profile">
-      <h3>{{ teacher.username }}</h3>
-      <p class="text-muted">{{ teacher.profile.role }}</p>
-    </div>
-    <div class="row text-center mt-4">
-      <div class="col-md-3 col-6">
-        <h6 class="text-muted">Total Playlists</h6>
-        <p class="fw-bold">{{ total_courses }}</p>
-      </div>
-      <div class="col-md-3 col-6">
-        <h6 class="text-muted">Total Videos</h6>
-        <p class="fw-bold">{{ total_videos }}</p>
-      </div>
-      <div class="col-md-3 col-6">
-        <h6 class="text-muted">Total Likes</h6>
-        <p class="fw-bold">{{ total_likes }}</p>
-      </div>
-      <div class="col-md-3 col-6">
-        <h6 class="text-muted">Total Comments</h6>
-        <p class="fw-bold">{{ total_comments }}</p>
-      </div>
-    </div>
-  </div>
 
-  <div class="mt-5">
-    <h4 class="mb-3">Uploaded Courses</h4>
-    <div class="row">
-      {% for course in courses %}
-      <div class="col-md-4 mb-4">
-        <div class="card h-100 shadow-sm">
-          <img src="{{ course.thumbnail.url }}" class="card-img-top" alt="{{ course.title }}">
-          <div class="card-body">
-            <h5 class="card-title">{{ course.title }}</h5>
-            <p class="text-muted">{{ course.video_set.count }} videos</p>
-            <a href="{% url 'playlist' course.id %}" class="btn btn-purple">View Playlist</a>
+<!-- Hero Section with Animated Gradient Background -->
+<div class="hero-section py-5 mb-5">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-3 text-center">
+        <div class="profile-image-wrapper animate-up">
+          <img src="{{ teacher.profile.get_image_url }}" alt="{{ teacher.get_full_name }}" 
+               class="profile-image mb-3 shadow">
+          <div class="profile-badge">
+            <i class="bi bi-patch-check-fill"></i>
           </div>
         </div>
       </div>
-      {% empty %}
-      <p class="text-muted">No courses uploaded yet.</p>
-      {% endfor %}
+      <div class="col-md-9 text-white">
+        <div class="hero-content">
+          <h1 class="display-4 fw-bold mb-2 animate-up">{{ teacher.get_full_name }}</h1>
+          <p class="lead mb-3 text-white-50 animate-up delay-1">{{ teacher.profile.teaching_style|default:"Teacher" }}</p>
+          
+          <div class="stats-container d-flex gap-4 mb-4 animate-up delay-2">
+            <div class="stat-item text-center hover-lift">
+              <div class="stats-icon-box bg-primary-soft mb-2">
+                <i class="bi bi-collection-play text-primary"></i>
+              </div>
+              <h3 class="mb-0">{{ total_courses }}</h3>
+              <small>Courses</small>
+            </div>
+            <div class="stat-item text-center hover-lift">
+              <div class="stats-icon-box bg-success-soft mb-2">
+                <i class="bi bi-play-circle text-success"></i>
+              </div>
+              <h3 class="mb-0">{{ total_videos }}</h3>
+              <small>Videos</small>
+            </div>
+            <div class="stat-item text-center hover-lift">
+              <div class="stats-icon-box bg-info-soft mb-2">
+                <i class="bi bi-eye text-info"></i>
+              </div>
+              <h3 class="mb-0">{{ total_views }}</h3>
+              <small>Views</small>
+            </div>
+            <div class="stat-item text-center hover-lift">
+              <div class="stats-icon-box bg-warning-soft mb-2">
+                <i class="bi bi-heart text-warning"></i>
+              </div>
+              <h3 class="mb-0">{{ total_likes }}</h3>
+              <small>Likes</small>
+            </div>
+          </div>
+
+          <div class="about-section glass-card p-4 mb-4 hover-lift animate-up delay-3">
+            <div class="d-flex align-items-center mb-3">
+              <div class="stats-icon-box bg-primary-soft me-3">
+                <i class="bi bi-person-badge text-primary"></i>
+              </div>
+              <h5 class="text-white mb-0">About</h5>
+            </div>
+            <p class="mb-0 text-white-50">{{ teacher.profile.bio|default:"No bio available" }}</p>
+          </div>
+
+          <div class="row g-4 animate-up delay-4">
+            <div class="col-md-6">
+              <div class="glass-card p-4 h-100 hover-lift">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="stats-icon-box bg-success-soft me-3">
+                    <i class="bi bi-mortarboard text-success"></i>
+                  </div>
+                  <h5 class="text-white mb-0">Teaching Style</h5>
+                </div>
+                <p class="mb-0 text-white-50">{{ teacher.profile.teaching_style|default:"Not specified" }}</p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="glass-card p-4 h-100 hover-lift">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="stats-icon-box bg-warning-soft me-3">
+                    <i class="bi bi-calendar-check text-warning"></i>
+                  </div>
+                  <h5 class="text-white mb-0">Availability</h5>
+                </div>
+                <p class="mb-0 text-white-50">{{ teacher.profile.availability|default:"Not specified" }} hours/week</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
+<!-- Courses Section -->
+<div class="container pb-5">
+  <div class="section-header d-flex align-items-center justify-content-between mb-4">
+    <div>
+      <h3 class="mb-1">Courses by {{ teacher.get_full_name }}</h3>
+      <p class="text-secondary mb-0">Browse through the instructor's courses</p>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    {% for course in courses %}
+    <div class="col-md-4">
+      <div class="card course-card hover-lift h-100">
+        <div class="course-thumbnail">
+          <img src="{{ course.get_thumbnail_url }}" class="card-img-top" alt="{{ course.title }}">
+          <div class="course-overlay">
+            <a href="{% url 'playlist' course.id %}" class="btn btn-light">
+              <i class="bi bi-play-circle me-2"></i>View Course
+            </a>
+          </div>
+          <div class="video-count-badge">
+            <i class="bi bi-collection-play me-1"></i>{{ course.videos.count }} videos
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="category-badge mb-2">
+            <span class="badge bg-primary-soft text-primary">
+              <i class="bi bi-grid-fill me-1"></i>{{ course.category.name }}
+            </span>
+          </div>
+          <h5 class="card-title mb-2">{{ course.title }}</h5>
+          <p class="card-text text-muted">{{ course.description|truncatewords:15 }}</p>
+          <div class="course-meta">
+            <span class="me-3">
+              <i class="bi bi-play-circle me-1"></i>{{ course.videos.count }} lessons
+            </span>
+            <span>
+              <i class="bi bi-clock me-1"></i>Self-paced
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+      <div class="empty-state text-center py-5">
+        <i class="bi bi-collection-play display-4 text-muted mb-3"></i>
+        <h4>No Courses Yet</h4>
+        <p class="text-muted mb-0">This teacher hasn't created any courses yet.</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
 <style>
-  .btn-purple {
-    background-color: #7b2cbf;
-    color: white;
+  :root[data-theme="light"] {
+    --hero-gradient-start: var(--primary-color);
+    --hero-gradient-end: var(--primary-dark);
+    --hero-text: #ffffff;
+    --hero-text-secondary: rgba(255, 255, 255, 0.7);
+    --card-bg: #ffffff;
+    --card-border: rgba(0, 0, 0, 0.125);
+    --icon-soft-opacity: 0.1;
+    --overlay-bg: rgba(0, 0, 0, 0.5);
+    --hover-transform: scale(1.02);
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --text-primary: #2d3748;
+    --text-secondary: #718096;
+    --badge-bg: #f8f9fa;
+    --badge-text: #2d3748;
   }
-  .btn-purple:hover {
-    background-color: #5a189a;
+
+  :root[data-theme="dark"] {
+    --hero-gradient-start: var(--primary-dark);
+    --hero-gradient-end: #1a1a2e;
+    --hero-text: #ffffff;
+    --hero-text-secondary: rgba(255, 255, 255, 0.7);
+    --card-bg: #2a2a3c;
+    --card-border: rgba(255, 255, 255, 0.125);
+    --icon-soft-opacity: 0.2;
+    --overlay-bg: rgba(0, 0, 0, 0.7);
+    --hover-transform: scale(1.02);
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --text-primary: #e2e8f0;
+    --text-secondary: #a0aec0;
+    --badge-bg: #374151;
+    --badge-text: #e2e8f0;
+  }
+
+  .hero-section {
+    background: linear-gradient(135deg, var(--hero-gradient-start), var(--hero-gradient-end));
+    position: relative;
+    overflow: hidden;
+  }
+
+  .profile-image-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+
+  .profile-image {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .profile-badge {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    background: var(--hero-gradient-start);
     color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .stats-icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+  }
+
+  .bg-primary-soft { background-color: rgba(var(--primary-rgb), var(--icon-soft-opacity)); }
+  .bg-success-soft { background-color: rgba(25, 135, 84, var(--icon-soft-opacity)); }
+  .bg-warning-soft { background-color: rgba(255, 193, 7, var(--icon-soft-opacity)); }
+  .bg-info-soft { background-color: rgba(13, 202, 240, var(--icon-soft-opacity)); }
+
+  .stat-item {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 1.5rem;
+    min-width: 140px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .course-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    border: 1px solid var(--card-border);
+    overflow: hidden;
+  }
+
+  .course-thumbnail {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+  }
+
+  .course-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .course-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--overlay-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .video-count-badge {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+  }
+
+  .hover-lift {
+    transition: all 0.3s ease;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  .course-card:hover .course-thumbnail img {
+    transform: scale(1.1);
+  }
+
+  .course-card:hover .course-overlay {
+    opacity: 1;
+  }
+
+  .category-badge .badge {
+    font-weight: 500;
+    padding: 0.5em 0.8em;
+    font-size: 0.85rem;
+  }
+
+  .course-meta {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+  }
+
+  .empty-state {
+    padding: 3rem 1.5rem;
+    border-radius: 1rem;
+    background: var(--card-bg);
+    border: 2px dashed var(--card-border);
+  }
+
+  /* Animations */
+  .animate-up {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: slideUp 0.6s ease forwards;
+  }
+
+  .delay-1 { animation-delay: 0.2s; }
+  .delay-2 { animation-delay: 0.4s; }
+  .delay-3 { animation-delay: 0.6s; }
+  .delay-4 { animation-delay: 0.8s; }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Dark Mode Adjustments */
+  [data-theme="dark"] .course-card {
+    background: var(--card-bg);
+    color: var(--text-primary);
+  }
+
+  [data-theme="dark"] .text-muted {
+    color: var(--text-secondary) !important;
+  }
+
+  [data-theme="dark"] .empty-state {
+    background: var(--card-bg);
+  }
+
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .stats-container {
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .stat-item {
+      min-width: calc(50% - 0.5rem);
+    }
+
+    .profile-image {
+      width: 150px;
+      height: 150px;
+    }
   }
 </style>
 {% endblock %}
