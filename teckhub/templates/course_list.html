@@ -9,6 +9,14 @@
 <style>
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 80px;
+  }
+
+  :target::before {
+    content: "";
+    display: block;
+    height: 80px;
+    margin-top: -80px;
   }
 
   .course-hero-section {
@@ -18,26 +26,12 @@
     overflow: hidden;
   }
 
-  .text-purple { 
-    color: #7b2cbf; 
-  }
+  .text-purple { color: #7b2cbf; }
+  .bg-purple { background-color: #7b2cbf !important; }
+  .bg-purple-soft { background-color: rgba(123, 44, 191, 0.1) !important; }
 
-  .bg-purple {
-    background-color: #7b2cbf !important;
-  }
-
-  .bg-purple-soft {
-    background-color: rgba(123, 44, 191, 0.1) !important;
-  }
-
-  .course-list-highlight {
-    transition: all 0.5s ease;
-  }
-
-  .highlighted {
-    box-shadow: 0 0 30px rgba(123, 44, 191, 0.6);
-    transform: translateY(-5px);
-  }
+  .course-list-highlight { transition: all 0.5s ease; }
+  .highlighted { box-shadow: 0 0 30px rgba(123, 44, 191, 0.6); transform: translateY(-5px); }
 
   .course-profile-card {
     border: none;
@@ -46,6 +40,11 @@
     background: white;
     overflow: hidden;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  }
+
+  [data-bs-theme="dark"] .course-profile-card {
+    background: #2b2b2b;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
 
   .thumbnail-container {
@@ -66,6 +65,12 @@
     margin-bottom: 0.75rem !important;
   }
 
+  [data-bs-theme="dark"] .instructor-info .text-dark,
+  [data-bs-theme="dark"] .instructor-info .fw-medium {
+    color: #00ffff !important;
+    text-shadow: 0 0 1px rgba(0, 255, 255, 0.3);
+  }
+
   .instructor-info img {
     width: 32px;
     height: 32px;
@@ -73,21 +78,28 @@
     margin-right: 8px;
   }
 
-  .card-body {
-    padding: 1rem;
-  }
+  .card-body { padding: 1rem; }
+  .card-title { font-size: 1rem; line-height: 1.4; margin-bottom: 0.5rem !important; }
 
-  .card-title {
-    font-size: 1rem;
-    line-height: 1.4;
-    margin-bottom: 0.5rem !important;
-  }
+  [data-bs-theme="dark"] .card-title,
+  [data-bs-theme="dark"] .text-dark { color: #ffffff !important; }
+
+  [data-bs-theme="dark"] .text-muted { color: #b0b0b0 !important; }
 
   .course-stats {
     display: flex;
     gap: 1rem;
     font-size: 0.875rem;
+    color: #4a4a4a;
   }
+
+  [data-bs-theme="dark"] .course-stats,
+  [data-bs-theme="dark"] .course-stats .stat-item,
+  [data-bs-theme="dark"] .stat-item span {
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  [data-bs-theme="dark"] .course-stats .stat-item i { color: #9d4edb; }
 
   .stat-item {
     display: flex;
@@ -99,6 +111,11 @@
     padding: 0.75rem 1rem;
   }
 
+  [data-bs-theme="dark"] .card-footer {
+    background-color: #2b2b2b !important;
+    border-top: 1px solid #404040;
+  }
+
   .btn-sm {
     padding: 0.25rem 0.75rem;
     font-size: 0.875rem;
@@ -108,8 +125,75 @@
     padding: 0.75rem;
   }
 
-  .mb-4 {
-    margin-bottom: 1rem !important;
+  .mb-4 { margin-bottom: 1rem !important; }
+
+  .course-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .thumbnail-container:hover .course-overlay {
+    opacity: 1;
+  }
+
+  .view-course {
+    color: white;
+    font-weight: 500;
+  }
+
+  .video-count-badge {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+  }
+
+  .btn-urple {
+    background-color: #7b2cbf;
+    color: white;
+  }
+
+  .btn-urple:hover {
+    background-color: #6a24a6;
+    color: white;
+  }
+
+  [data-bs-theme="dark"] .btn-urple {
+    background-color: #9d4edb;
+    color: white;
+  }
+
+  [data-bs-theme="dark"] .btn-urple:hover {
+    background-color: #8a3cc7;
+  }
+
+  [data-bs-theme="dark"] .bg-purple-soft {
+    background-color: rgba(157, 78, 219, 0.2) !important;
+  }
+
+  [data-bs-theme="dark"] .badge.bg-purple-soft {
+    background-color: #4a1d96 !important;
+    color: #ffd700 !important;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+  }
+
+  [data-bs-theme="dark"] .text-purple,
+  [data-bs-theme="dark"] .bg-purple-soft.text-purple {
+    color: #ffd700 !important;
+  }
+
+  [data-bs-theme="dark"] .instructor-info small.text-muted {
+    color: #a8a8a8 !important;
   }
 </style>
 
@@ -141,7 +225,7 @@
               <i class="bi bi-plus-lg"></i> Create Course
             </a>
           {% endif %}
-          <a href="javascript:void(0)" onclick="scrollToCourses()" class="btn btn-outline-light btn-lg">
+          <a href="#courses" class="btn btn-outline-light btn-lg">
             <i class="bi bi-arrow-down-circle"></i> Browse Courses
           </a>
         </div>
@@ -236,7 +320,7 @@
 
           <div class="card-footer bg-transparent">
             <div class="d-flex justify-content-between align-items-center">
-              <a href="{% url 'playlist' course.id %}" class="btn btn-purple btn-sm">
+              <a href="{% url 'playlist' course.id %}" class="btn btn-urple btn-sm">
                 <i class="bi bi-play-circle me-1"></i>Start Learning
               </a>
               <form action="{% url 'toggle_bookmark' course.id %}" method="post" class="d-inline">
@@ -269,38 +353,15 @@
 </div>
 
 <script>
-  // Smooth scroll with highlight effect
-  function scrollToCourses() {
-    const coursesSection = document.getElementById('courses');
-    const yOffset = -80; // header offset
-    const y = coursesSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
-
-    // Smooth scroll
-    window.scrollTo({
-      top: y,
-      behavior: 'smooth'
-    });
-
-    // Add highlight effect
-    setTimeout(() => {
-      const courseList = document.querySelector('.course-list-highlight');
-      courseList.classList.add('highlighted');
-      
-      // Remove highlight after animation
-      setTimeout(() => {
-        courseList.classList.remove('highlighted');
-      }, 1500);
-    }, 800); // Start highlight after scroll completes
-  }
-
-  // Search functionality
-  document.getElementById("searchBox").addEventListener("keyup", function() {
-    const search = this.value.toLowerCase();
-    document.querySelectorAll(".course-card-wrapper").forEach(card => {
-      const title = card.querySelector(".card-title").textContent.toLowerCase();
-      const instructor = card.querySelector(".instructor-info").textContent.toLowerCase();
-      card.style.display = (title.includes(search) || instructor.includes(search)) ? "block" : "none";
+$(document).ready(function() {
+  $("#searchBox").keyup(function() {
+    const search = $(this).val().toLowerCase();
+    $(".course-card-wrapper").each(function() {
+      const title = $(this).find(".card-title").text().toLowerCase();
+      const instructor = $(this).find(".instructor-info").text().toLowerCase();
+      $(this).toggle(title.includes(search) || instructor.includes(search));
     });
   });
+});
 </script>
 {% endblock %}
